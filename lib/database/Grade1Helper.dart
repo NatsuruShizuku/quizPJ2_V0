@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 class Grade1Helper {
   Future<List<Word>> getWord(Database db) async {
     List<Map<String, dynamic>> maps = await db.query(tableQuizName,
-        columns: [vocabID, syllableQuiz , vocabQuiz]);
+        columns: [vocabID, syllableQuiz , vocabQuiz, gradeID]);
     if (maps.isNotEmpty) {
       return maps.map((vocab) => Word.fromMap(vocab)).toList();
     }
@@ -17,4 +17,4 @@ class Grade1Helper {
   Future close(Database db) async => db.close();
 }
 
-/// loading Database
+/// Pull Database
