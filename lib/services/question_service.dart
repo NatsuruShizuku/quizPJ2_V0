@@ -177,7 +177,7 @@ Future<String> getRandomWord({int? gradeID}) async {
               correctEnding: endingSound,
               count: 3,
             ),
-          ],
+          ], endingSound: endingSound.toString(),
         );
         
       case 2:
@@ -206,7 +206,7 @@ Future<String> getRandomWord({int? gradeID}) async {
           model_num: 2,
           setQuestion: "ข้อใดมีมาตราตัวสะกดตรงกับคำว่า {wordQuestion}?",
           wordQuestion: wordQuestion,
-          options: options,
+          options: options, endingSound: '',
         );
 
       case 3:
@@ -229,7 +229,7 @@ Future<String> getRandomWord({int? gradeID}) async {
               count: 3,
               gradeID: gradeID,
             ),
-          ],
+          ], endingSound: endingSound.toString(),
         );
         
       default:
