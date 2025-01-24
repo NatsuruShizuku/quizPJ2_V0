@@ -1,4 +1,4 @@
-const dbName = "word1.db";
+const dbName = "word6.db";
 const vocabID = "vocabID";
 const syllableQuiz = "syllable";
 const vocabQuiz = "vocab";

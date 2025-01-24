@@ -1,18 +1,36 @@
-class Question1 {
-  final int model_num;
-  final String setQuestion;
-  final String wordQuestion;
-  final List<Options> options;
-  final String endingSound;
+import 'package:flutter_application_0/models/questionModel.dart';
+import 'package:flutter_application_0/models/wordModel.dart';
 
-  Question1( {
-    required this.model_num, // เลขโมเดล
-    required this.setQuestion,
-    required this.wordQuestion, //Textคำถาม
-    required this.options, //
-    required this.endingSound,
+class Question1 {
+  final int modelnum; // หมายเลขคำถาม
+  final Vocabulary modelWord; // โมเดลคำศัพท์
+  final String modelMatra; // มาตราหรือหมวดหมู่
+  final QuestionModels modelQuestion; // โมเดลคำถาม
+  final List<Options> options; // ตัวเลือกคำตอบ
+
+  Question1({
+    required this.modelnum,
+    required this.modelWord,
+    required this.modelMatra,
+    required this.modelQuestion,
+    required this.options,
   });
-}
+
+  factory Question1.fromMap(Map<String, dynamic> map) {
+    return Question1(
+      modelnum: map['modelnum'],
+      modelWord: Vocabulary.fromMap(map['modelWord']),
+      modelMatra: map['modelMatra'],
+      modelQuestion: QuestionModels.fromMap(map['modelQuestion']),
+      options: List<Options>.from(
+        map['options'].map((option) => Options.fromMap(option)),
+      ),
+    );
+  }
+} 
+
+
+
 
 class Options {
   final String optionTEXT;
@@ -22,4 +40,11 @@ class Options {
     required this.optionTEXT,
     required this.isCorrect,
   });
+
+  factory Options.fromMap(Map<String, dynamic> map) {
+    return Options(
+      optionTEXT: map['optionTEXT'],
+      isCorrect: map['isCorrect'],
+    );
+  }
 }

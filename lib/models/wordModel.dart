@@ -3,8 +3,8 @@ class Vocabulary {
   final int syllable;
   final String vocab;
   final int gradeID;
-
-  Vocabulary({
+ 
+  Vocabulary( {
     required this.vocabID,
     required this.syllable,
     required this.vocab,
@@ -20,3 +20,5 @@ class Vocabulary {
     );
   }
 }
+
+
