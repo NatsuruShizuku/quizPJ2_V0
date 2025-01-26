@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 
-class ThaiWordProcessorApp extends StatelessWidget {
-  const ThaiWordProcessorApp({super.key});
+class WordCheck extends StatelessWidget {
+  const WordCheck({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ThaiWordProcessorScreen(),
+      home: WordCheckScreen(),
     );
   }
 }
 
-class ThaiWordProcessorScreen extends StatefulWidget {
+class WordCheckScreen extends StatefulWidget {
   @override
-  _ThaiWordProcessorScreenState createState() => _ThaiWordProcessorScreenState();
+  _WordCheckScreenState createState() => _WordCheckScreenState();
+
+  processThaiWordEnding(String vocab) {}
+
+  identifyThaiCategory(lastConsonant) {}
 }
 
-class _ThaiWordProcessorScreenState extends State<ThaiWordProcessorScreen> {
+class _WordCheckScreenState extends State<WordCheckScreen> {
   final TextEditingController _controller = TextEditingController();
   String _result = "";
 
@@ -26,16 +30,12 @@ class _ThaiWordProcessorScreenState extends State<ThaiWordProcessorScreen> {
   final List<String> consonants = [
     'ก', 'ข', 'ค', 'ฆ',
     'ง',
-    'จ', 'ฉ', 'ช', 'ฌ',
-    'ญ',
-    'ด', 'ต', 'ถ', 'ท', 'ธ',
-    'น', 'ณ',
+    'ด', 'ต', 'ถ', 'ท', 'ธ', 'จ', 'ธ', 'ฎ', 'ฏ', 'ฑ', 'ฒ', 'ช', 'ซ', 'ศ', 'ษ', 'ส',
+    'น', 'ณ', 'ญ', 'ร', 'ล', 'ฬ',
     'บ', 'ป', 'พ', 'ฟ', 'ภ',
     'ม',
-    'ย', 'ร', 'ล', 'ว',
-    'ส', 'ศ', 'ษ', 'ห',
-    'ฬ',
-    'อ'
+    'ย',
+    'ว',
   ];
 
   final List<String> vowels = [
@@ -98,9 +98,7 @@ String identifyThaiCategory(String consonant) {
     'ฆ': 'แม่กก',
     'ง': 'แม่กง',
     'จ': 'แม่กด',
-    'ฉ': 'แม่กด',
     'ช': 'แม่กด',
-    'ฌ': 'แม่กด',
     'ญ': 'แม่กน',
     'ด': 'แม่กด',
     'ต': 'แม่กด',
@@ -122,9 +120,7 @@ String identifyThaiCategory(String consonant) {
     'ส': 'แม่กด',
     'ศ': 'แม่กด',
     'ษ': 'แม่กด',
-    'ห': 'แม่กด',
     'ฬ': 'แม่กน',
-    'อ': 'แม่เกอว',
   };
 
   return categories[consonant] ?? 'ไม่พบมาตราตัวสะกด';
@@ -143,41 +139,12 @@ String identifyThaiCategory(String consonant) {
     String category = identifyThaiCategory(lastConsonant);
 
     setState(() {
-      _result = "คำว่า '$input' อยู่ใน $category";
+      _result = category;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("ตรวจสอบมาตราตัวสะกด"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: "กรอกคำภาษาไทย",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: processWord,
-              child: Text("ตรวจสอบ"),
-            ),
-            SizedBox(height: 16),
-            Text(
-              _result,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }

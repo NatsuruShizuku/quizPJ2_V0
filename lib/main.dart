@@ -76,7 +76,7 @@ void main() async {
     final QuizData quizData = QuizData(
       questionService: questionService,
       questionCount: 5, // จำนวนคำถาม
-      gradeID: 1,       // ระดับชั้น
+      gradeID: 2,       // ระดับชั้น
     );
 
     runApp(MyApp(quizData: quizData));

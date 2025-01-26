@@ -80,7 +80,7 @@ Future<Database> _initDB(String filePath) async {
 Future<void> checkDatabaseConnection() async {
   try {
     final db = await database;
-    final tables = await db.rawQuery("SELECT vocab FROM Vocabulary WHERE type='table'");
+    final tables = await db.rawQuery("SELECT vocab FROM Vocabulary WHERE vocab='table'");
     print('Tables in database: $tables');
     
     final vocabCount = await db.rawQuery("SELECT COUNT(*) FROM Vocabulary");
