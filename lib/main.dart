@@ -75,7 +75,7 @@ void main() async {
     // สร้าง QuizData
     final QuizData quizData = QuizData(
       questionService: questionService,
-      questionCount: 5, // จำนวนคำถาม
+      questionCount: 10, // จำนวนคำถาม
       gradeID: 2,       // ระดับชั้น
     );
 

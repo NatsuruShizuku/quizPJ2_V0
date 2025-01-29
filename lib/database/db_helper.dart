@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_application_0/const/const.dart';
@@ -129,6 +130,28 @@ Future<Map<String, dynamic>> getRandomMatra() async {
     throw Exception("ไม่พบข้อมูลในฐานข้อมูล");
   }
 }
+
+  Future<List<String>> getRandomQuestions() async {
+    final db = await database;
+    List<Map<String, dynamic>> result = await db.query('QuestionM');
+
+    if (result.isEmpty) return []; // ถ้าฐานข้อมูลว่าง ให้ return ค่าว่าง
+
+    List<String> allQuestions = result.map((e) => e['QuestionM'] as String).toList();
+
+    // สุ่มข้อไม่ซ้ำ 6 ข้อแรก
+    List<String> selectedQuestions = [];
+    selectedQuestions.addAll(allQuestions..shuffle());
+    selectedQuestions = selectedQuestions.take(6).toList();
+
+    // สุ่มข้อซ้ำเพิ่มให้ครบ 10 ข้อ
+    Random random = Random();
+    while (selectedQuestions.length < 10) {
+      selectedQuestions.add(selectedQuestions[random.nextInt(6)]);
+    }
+
+    return selectedQuestions;
+  }
 
 }
 
