@@ -1,4 +1,0 @@
-#Tue Jan 28 11:34:37 ICT 2025
-base.0=E\:\\PJclone\\makeQuizTest\\android\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
