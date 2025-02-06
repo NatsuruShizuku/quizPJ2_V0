@@ -52,7 +52,7 @@ class QuestionM {
       case 1:
         return "${vocabulary.vocab} $questionText?";
       case 2:
-        return "$questionText ${randomWord.vocab}?";
+        return "$questionText ${vocabulary.vocab}?";
       case 3:
         return "$questionText ${vocabulary.matraText}?";
       case 4:
