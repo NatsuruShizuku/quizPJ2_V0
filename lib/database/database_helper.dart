@@ -1,3 +1,4 @@
+
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -45,6 +46,7 @@ class DatabaseHelper {
       syllable: map['syllable'],
       vocab: map['vocab'],
       matraText: map['matraTEXT'],
+      matraID: map['matraID'],
     )).toList();
   }
 

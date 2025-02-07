@@ -1,14 +1,19 @@
+
+//backUp 2
+
 // import 'dart:async';
 // import 'dart:math';
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_application_0/database/database_helper.dart';
 // import 'package:flutter_application_0/models/dataModel.dart';
+// import 'package:flutter_application_0/screens/gamesummary.dart'; // import GameSummaryScreen
 
 // class QuizGame extends StatefulWidget {
 //   @override
 //   _QuizGameState createState() => _QuizGameState();
 // }
+
 // enum AnswerType { matraText, vocab }
 
 // class _QuizGameState extends State<QuizGame> {
@@ -18,14 +23,19 @@
 //   int score = 0;
 //   int consecutiveWrong = 0;
 //   int remainingTime = 180;
+//   int totalQuestions = 0; // นับจำนวนคำถามที่ตอบไปแล้ว
 //   Timer? timer;
 //   QuizQuestion? currentQuestion;
-// // adding
-// bool showFeedback = false;
+//   QuestionM? currentQuestionM; // เก็บข้อมูล QuestionM ของคำถามปัจจุบัน
+//   bool showFeedback = false;
 //   String? selectedAnswer;
 //   bool isCorrect = false;
 //   Timer? feedbackTimer;
 //   bool isProcessingAnswer = false;
+//   int lives = 3;
+//   int timeElapsed = 0;
+//   late Vocabulary vocabulary;
+//   late Vocabulary partner;
 
 //   @override
 //   void initState() {
@@ -47,296 +57,330 @@
 //     startGame();
 //   }
 
-// //new Stratgame
-// void startGame() {
-//   // รีเซ็ตค่าทั้งหมด
-//   timer?.cancel();
-//   feedbackTimer?.cancel();
-  
-//   setState(() {
-//     score = 0;
-//     consecutiveWrong = 0;
-//     remainingTime = 180;
-//     showFeedback = false;
-//     selectedAnswer = null;
-//     isCorrect = false;
-//     isProcessingAnswer = false;
-//   });
+//   // เริ่มเกมใหม่
+//   void startGame() {
+//     timer?.cancel();
+//     feedbackTimer?.cancel();
 
-//   generateNewQuestion();
-//   startTimer();
-// }
-
-//   // void startTimer() {
-//   //   timer = Timer.periodic(Duration(seconds: 1), (timer) {
-//   //     if (remainingTime > 0) {
-//   //       setState(() => remainingTime--);
-//   //     } else {
-//   //       endGame();
-//   //     }
-//   //   });
-//   // }
-//   void startTimer() {
-//   timer = Timer.periodic(Duration(seconds: 1), (timer) {
-//     if (remainingTime > 0) {
-//       setState(() => remainingTime--);
-//     } else {
-//       timer.cancel();
-//       endGame();
-//     }
-//   });
-// }
-
-// //   //ส่วนสร้างคำถาม
-// //   void generateNewQuestion() {
-// //   final random = Random();
-  
-// //   // สุ่มคำถาม
-// //   final question = questions[random.nextInt(questions.length)];
-  
-// //   // สุ่มคำศัพท์หลัก
-// //   final vocabulary = vocabularies[random.nextInt(vocabularies.length)];
-  
-// //   // สุ่มคำศัพท์เพิ่มเติมสำหรับรูปแบบที่ 2
-// //   Vocabulary randomWord;
-// //   do {
-// //     randomWord = vocabularies[random.nextInt(vocabularies.length)];
-// //   } while (randomWord.vocabID == vocabulary.vocabID);
-
-// //   // เตรียมข้อมูลสำหรับสร้างคำถาม
-// //   final questionData = {
-// //     'vocab': vocabulary.vocab,
-// //     'randomWord': randomWord.vocab,
-// //     'matraText': vocabulary.matraText,
-// //   };
-
-// //   // สร้างข้อความคำถาม
-// //   final questionText = question.generateQuestionText(questionData);
-
-// //   // เตรียมตัวเลือก
-// //   final wrongMatras = matras
-// //       .where((m) => m.matraText != vocabulary.matraText)
-// //       .map((m) => m.matraText)
-// //       .toList()
-// //     ..shuffle();
-  
-// //   final options = [
-// //     vocabulary.matraText,
-// //     ...wrongMatras.take(3)
-// //   ]..shuffle();
-
-// //   setState(() {
-// //     currentQuestion = QuizQuestion(
-// //       text: questionText,
-// //       correctAnswer: vocabulary.matraText,
-// //       options: options,
-// //     );
-// //   });
-// // }
-
-// void generateNewQuestion() {
-//   final random = Random();
-//   final question = questions[random.nextInt(questions.length)];
-//   final vocabulary = vocabularies[random.nextInt(vocabularies.length)];
-//   Vocabulary randomWord = _getRandomWord(vocabulary.vocabID);
-
-//   final questionText = question.generateQuestionText(vocabulary, randomWord);
-//   final correctAnswer = _getCorrectAnswer(question, vocabulary);
-//   final options = _generateOptions(question, vocabulary, correctAnswer);
-
-//   setState(() {
-//     currentQuestion = QuizQuestion(
-//       text: questionText,
-//       correctAnswer: correctAnswer,
-//       options: options,
-//     );
-//   });
-// }
-
-// // String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
-// //   return question.answerType == AnswerType.matraText 
-// //       ? vocabulary.matraText 
-// //       : vocabulary.vocab;
-// // }
-// String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
-//   switch (question.answerType) {
-//     case AnswerType.matraText:
-//       return vocabulary.matraText;
-//     case AnswerType.vocab:
-//       return vocabulary.vocab;
-//     // เพิ่มประเภทคำตอบอื่นๆ ตามต้องการ
-//   }
-// }
-
-// List<String> _generateOptions(QuestionM question, Vocabulary vocabulary, String correctAnswer) {
-//   final usedIds = {vocabulary.vocabID};
-//   final options = <String>[correctAnswer];
-//   final answerType = question.answerType;
-
-//   while (options.length < 4) {
-//     final randomWord = vocabularies[Random().nextInt(vocabularies.length)];
-//     if (!usedIds.contains(randomWord.vocabID)) {
-//       usedIds.add(randomWord.vocabID);
-//       final value = answerType == AnswerType.matraText 
-//           ? randomWord.matraText 
-//           : randomWord.vocab;
-//       if (!options.contains(value)) {
-//         options.add(value);
-//       }
-//     }
-//   }
-
-//   return options..shuffle();
-// }
-
-// Vocabulary _getRandomWord(int excludeId) {
-//   final random = Random();
-//   Vocabulary randomWord;
-//   do {
-//     randomWord = vocabularies[random.nextInt(vocabularies.length)];
-//   } while (randomWord.vocabID == excludeId);
-//   return randomWord;
-// }
-
-// AnswerType get answerType {
-//   switch (questionID) { // ใช้ questionID ของคำถามปัจจุบัน
-//     case 1:  // ถ้า QuestionID เป็น 1
-//     case 3:  // หรือ 3
-//     case 4:  // หรือ 4
-//       return AnswerType.matraText; // ใช้มาตราตัวสะกดเป็นคำตอบ
-//     default: // กรณีอื่นๆ ทั้งหมด
-//       return AnswerType.vocab; // ใช้คำศัพท์เป็นคำตอบ
-//   }
-// }
-
-
-// //new handleAnswer
-// void handleAnswer(String selectedOption) {
-//   if (isProcessingAnswer || currentQuestion == null) return;
-  
-//   setState(() {
-//     isProcessingAnswer = true;
-//     selectedAnswer = selectedOption;
-//     isCorrect = selectedOption == currentQuestion!.correctAnswer;
-//     showFeedback = true;
-//   });
-
-//   // อัพเดทคะแนนและจำนวนผิดต่อเนื่อง
-//   if (isCorrect) {
-//     score++;
-//     consecutiveWrong = 0;
-//   } else {
-//     consecutiveWrong++;
-//   }
-
-//   feedbackTimer = Timer(Duration(seconds: 2), () {
 //     setState(() {
+//       score = 0;
+//       consecutiveWrong = 0;
+//       totalQuestions = 0;
+//       remainingTime = 180;
 //       showFeedback = false;
 //       selectedAnswer = null;
+//       isCorrect = false;
 //       isProcessingAnswer = false;
 //     });
 
-//     if (remainingTime <= 0 || consecutiveWrong >= 3) {
-//       endGame();
-//     } else {
-//       generateNewQuestion();
+//     generateNewQuestion();
+//     startTimer();
+//   }
+
+//   void startTimer() {
+//     timer = Timer.periodic(Duration(seconds: 1), (timer) {
+//       if (remainingTime > 0) {
+//         setState(() => remainingTime--);
+//       } else {
+//         timer.cancel();
+//         endGame(); // หมดเวลา
+//       }
+//     });
+//   }
+
+//   void generateNewQuestion() {
+//     final random = Random();
+//     final question = questions[random.nextInt(questions.length)];
+//     final vocabulary = vocabularies[random.nextInt(vocabularies.length)];
+//     Vocabulary randomWord = _getRandomWord(vocabulary.vocabID);
+//     Matra randomMatra = _getRandomMatra(matra.matraID);
+//     final questionText = question.generateQuestionText(vocabulary, randomWord);
+//     final correctAnswer = _getCorrectAnswer(question, vocabulary);
+//     final options = _generateOptions(question, vocabulary, correctAnswer);
+
+//     setState(() {
+//       currentQuestion = QuizQuestion(
+//         text: questionText,
+//         correctAnswer: correctAnswer,
+//         options: options,
+//       );
+//       currentQuestionM = question; // เก็บข้อมูลคำถามจริงไว้ที่นี่
+//     });
+//   }
+
+//   // String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
+//   //   switch (question.answerType) {
+//   //     case AnswerType.matraText:
+//   //       return vocabulary.matraText;
+//   //     case AnswerType.vocab:
+//   //       return vocabulary.vocab;
+//   //   }
+//   // }
+//   String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
+//   if (question.questionID == 5) {
+//     Vocabulary? partner;
+//     for (var word in vocabularies) {
+//       if (word.vocabID != vocabulary.vocabID && word.matraText == vocabulary.matraText) {
+//         partner = word;
+//         break;
+//       }
 //     }
-//   });
+//     partner ??= vocabulary;
+//     return "${vocabulary.vocab} ${partner.vocab}";
+//   }
+//   return question.answerType == AnswerType.matraText 
+//       ? vocabulary.matraText 
+//       : vocabulary.vocab;
 // }
 
+// List<String> _generateOptions(QuestionM question, Vocabulary vocabulary, String correctAnswer) {
+//   if (question.questionID == 2) {
+//     // Generate correct answer not from the current vocabulary
+//     List<Vocabulary> candidates = vocabularies.where((v) => v.vocabID != vocabulary.vocabID).toList();
+//     String correctAnswer = candidates.isNotEmpty 
+//         ? candidates[Random().nextInt(candidates.length)].matraText 
+//         : vocabulary.matraText;
+
+//     List<String> options = [correctAnswer, vocabulary.matraText];
+//     Set<String> usedMatras = {correctAnswer, vocabulary.matraText};
+
+//     // Add other unique matras
+//     while (options.length < 4) {
+//       Vocabulary word = vocabularies[Random().nextInt(vocabularies.length)];
+//       if (!usedMatras.contains(word.matraText)) {
+//         options.add(word.matraText);
+//         usedMatras.add(word.matraText);
+//       }
+//     }
+//     options.shuffle();
+//     return options;
+//   }
+//   else if (question.questionID == 4) {
+//   final answerType = question.answerType;
+
+//   // ตัวเลือกที่ผิดทั้ง 3 ตัว ต้องมาจากคำที่มี matraText เดียวกันกับคำถาม (vocabulary.matraText)
+//   List<String> wrongOptions = vocabularies
+//       .where((w) => w.matraText == vocabulary.matraText)
+//       .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+//       .toSet()
+//       .toList();
+//   wrongOptions.shuffle();
+//   List<String> finalWrongOptions = wrongOptions.take(3).toList();
+
+//   // ตัวเลือกที่ถูกต้อง ต้องมาจากคำที่มี matraText ต่างจาก vocabulary.matraText
+//   List<String> candidateCorrects = vocabularies
+//       .where((w) => w.matraText != vocabulary.matraText)
+//       .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+//       .toSet()
+//       .toList();
+//   candidateCorrects.shuffle();
+//   String correctOption = candidateCorrects.first;
+
+//   // สร้าง options list และสับลำดับ
+//   List<String> options = [correctOption];
+//   options.addAll(finalWrongOptions);
+//   return options..shuffle();
+// } 
+// else if (question.questionID == 5) {
+//     // Ensure correct answer is the pair of words
+//     List<String> options = [correctAnswer];
+//     Set<String> usedOptions = {correctAnswer};
+
+//     // Generate wrong options with words from different matras
+//     while (options.length < 4) {
+//       Vocabulary word1 = vocabularies[Random().nextInt(vocabularies.length)];
+//       Vocabulary word2 = vocabularies[Random().nextInt(vocabularies.length)];
+//       if (word1.matraText == word2.matraText && word1.matraID == word2.matraID) continue;
+//       String option = "${word1.vocab} ${word2.vocab}";
+//       if (!usedOptions.contains(option)) {
+//         options.add(option);
+//         usedOptions.add(option);
+//       }
+//     }
+//     options.shuffle();
+//     return options;
+//   } 
+//   else if (question.questionID == 6) {
+//   final answerType = question.answerType;
+  
+//   // correct answer: เลือกจากคำที่สุ่มมา (vocabulary)
+//   // โดยต้องใช้ค่าที่แสดงออกมาตาม answerType
+//   String currentCorrect = (answerType == AnswerType.matraText) ? vocabulary.matraText : vocabulary.vocab;
+  
+//   // สำหรับตัวเลือกที่ผิด เราต้องการให้คำทั้งหมดมี matraText เดียวกัน
+//   // และต้องแน่ใจว่า matraText ของตัวเลือกที่ผิด (wrongMatra) ไม่ตรงกับ matraText ของคำที่ถูก (vocabulary)
+  
+//   // สร้างชุด candidate matraText ที่ไม่เท่ากับ vocabulary.matraText
+//   List<String> candidateMatraTexts = vocabularies
+//       .map((w) => w.matraText)
+//       .where((mt) => mt != vocabulary.matraText)
+//       .toSet()
+//       .toList();
+//   if (candidateMatraTexts.isEmpty) {
+//     // กรณีไม่มี candidate ให้ใช้ค่าเริ่มต้น (ไม่ควรเกิดขึ้นถ้าข้อมูลครบ)
+//     candidateMatraTexts = ['default'];
+//   }
+//   // เลือก candidate หนึ่งแบบสุ่มเพื่อเป็น wrongMatra
+//   String wrongMatra = candidateMatraTexts[Random().nextInt(candidateMatraTexts.length)];
+  
+//   // เก็บคำจาก vocabularies ที่มี matraText ตรงกับ wrongMatra
+//   List<String> wrongOptions = vocabularies
+//       .where((w) => w.matraText == wrongMatra)
+//       .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+//       .toSet()
+//       .toList();
+  
+//   // หากคำที่ได้มีไม่ถึง 3 ตัว เลือก candidate อื่นเพิ่มเติม
+//   if (wrongOptions.length < 3) {
+//     for (String candidate in candidateMatraTexts) {
+//       wrongMatra = candidate;
+//       wrongOptions = vocabularies
+//           .where((w) => w.matraText == candidate)
+//           .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+//           .toSet()
+//           .toList();
+//       if (wrongOptions.length >= 3) break;
+//     }
+//   }
+//   wrongOptions.shuffle();
+//   List<String> finalWrongOptions = wrongOptions.take(3).toList();
+
+//   // สร้าง options list โดยผสมตัวเลือกที่ถูกและตัวเลือกที่ผิด
+//   List<String> options = [currentCorrect];
+//   options.addAll(finalWrongOptions);
+//   return options..shuffle();
+// }
+//    else {
+//     // Default case (same as original else block)
+//     int requiredOptionsCount = 4;
+//     final usedIds = {vocabulary.vocabID};
+//     final options = <String>[correctAnswer];
+//     final answerType = question.answerType;
+
+//     while (options.length < requiredOptionsCount) {
+//       final randomWord = vocabularies[Random().nextInt(vocabularies.length)];
+//       if (usedIds.contains(randomWord.vocabID)) continue;
+//       if (answerType == AnswerType.matraText && randomWord.matraText == vocabulary.matraText) continue;
+//       usedIds.add(randomWord.vocabID);
+//       final value = answerType == AnswerType.matraText ? randomWord.matraText : randomWord.vocab;
+//       if (!options.contains(value)) options.add(value);
+//     }
+//     return options..shuffle();
+//   }
+// }
+
+
+//   Vocabulary _getRandomWord(int excludeId) {
+//     final random = Random();
+//     Vocabulary randomWord;
+//     do {
+//       randomWord = vocabularies[random.nextInt(vocabularies.length)];
+//     } while (randomWord.vocabID == excludeId);
+//     return randomWord;
+//   }
+//   Matra _getRandomMatra(int excludeId) {
+//     final random = Random();
+//     Matra randomMatra;
+//     do {
+//       randomMatra = matras[random.nextInt(matras.length)];
+//     } while (randomMatra.matraID == excludeId);
+//     return randomMatra;
+//   }
+//   // getter answerType ที่ใช้อ้างอิงจาก currentQuestionM
+//   // AnswerType get answerType {
+//   //   if (currentQuestionM == null) return AnswerType.vocab;
+//   //   switch (currentQuestionM!.questionID) {
+//   //     case 2:
+//   //     case 3:
+//   //     case 4:
+//   //     case 5:
+//   //     case 6:
+//   //       return AnswerType.matraText;
+//   //     default:
+//   //       return AnswerType.vocab;
+//   //   }
+//   // }
+//   AnswerType get answerType {
+//   if (currentQuestionM == null) return AnswerType.vocab;
+//   switch (currentQuestionM!.questionID) {
+//     case 2:
+//     case 3:
+//     case 4:
+//     case 6:  return AnswerType.matraText;
+//     case 5:  return AnswerType.vocab;
+//     default: return AnswerType.vocab;
+//   }
+// }
+
+//   // เมื่อผู้เล่นตอบคำถาม
+//   void handleAnswer(String selectedOption) {
+//     if (isProcessingAnswer || currentQuestion == null) return;
+
+//     setState(() {
+//       isProcessingAnswer = true;
+//       selectedAnswer = selectedOption;
+//       isCorrect = selectedOption == currentQuestion!.correctAnswer;
+//       showFeedback = true;
+//       totalQuestions++; // เพิ่มจำนวนคำถามที่ตอบไปแล้ว
+//     });
+
+//     // อัพเดทคะแนนและจำนวนผิดติดต่อกัน
+//     if (isCorrect) {
+//       score++;
+//       consecutiveWrong = 0;
+//     } else {
+//       consecutiveWrong++;
+//     }
+
+//     feedbackTimer = Timer(Duration(seconds: 2), () {
+//       setState(() {
+//         showFeedback = false;
+//         selectedAnswer = null;
+//         isProcessingAnswer = false;
+//       });
+
+//       // จบเกมเมื่อหมดเวลา หรือถ้าตอบผิดครบ 3 ครั้ง
+//       if (remainingTime <= 0 || consecutiveWrong >= 3) {
+//         endGame();
+//       } else {
+//         generateNewQuestion();
+//       }
+//     });
+//   }
+
+//   // เมื่อเกมจบ ให้ไปที่หน้าสรุปคะแนน
 //   void endGame() {
 //     timer?.cancel();
 //     feedbackTimer?.cancel();
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: Text('Game Over'),
-//         content: Text('Your Score: $score'),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: Text('OK'),
-//           )
-//         ],
+//     // คำนวณเวลาเล่นไป (เริ่มที่ 180 วินาที ลบด้วย remainingTime)
+//     final int timeElapsed = 180 - remainingTime;
+
+//     // ใช้ Navigator.pushReplacement เพื่อแทนที่หน้าจอเกมด้วยหน้าสรุปคะแนน
+//     Navigator.pushReplacement(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => GameSummaryScreen(
+//           score: score,
+//           totalQuestions: totalQuestions,
+//           timeElapsed: timeElapsed,
+//         ),
 //       ),
 //     );
 //   }
 
-//   // @override
-//   // Widget build(BuildContext context) {
-//   //   return Scaffold(
-//   //     appBar: AppBar(
-//   //       title: Text('ภาษาไทย Quiz'),
-//   //       actions: [
-//   //         IconButton(
-//   //           icon: Icon(Icons.refresh),
-//   //           onPressed: initializeGame,
-//   //         )
-//   //       ],
-//   //     ),
-//   //     body: currentQuestion == null
-//   //         ? Center(child: CircularProgressIndicator())
-//   //         : Column(
-//   //             children: [
-//   //               LinearProgressIndicator(
-//   //                 value: remainingTime / 180,
-//   //               ),
-//   //               Padding(
-//   //                 padding: EdgeInsets.all(16),
-//   //                 child: Column(
-//   //                   children: [
-//   //                     Text(
-//   //                       'คะแนน: $score',
-//   //                       style: TextStyle(fontSize: 24),
-//   //                     ),
-//   //                     Text(
-//   //                       'เวลาเหลือ: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}',
-//   //                       style: TextStyle(fontSize: 20),
-//   //                     ),
-//   //                   ],
-//   //                 ),
-//   //               ),
-//   //               // Expanded(
-//   //               //   child: Center(
-//   //               //     child: Column(
-//   //               //       mainAxisAlignment: MainAxisAlignment.center,
-//   //               //       children: [
-//   //               //         Text(
-//   //               //           currentQuestion!.text,
-//   //               //           style: TextStyle(fontSize: 24),
-//   //               //           textAlign: TextAlign.center,
-//   //               //         ),
-//   //               //         SizedBox(height: 20),
-//   //               //         ...currentQuestion!.options.map((option) => Padding(
-//   //               //           padding: EdgeInsets.symmetric(vertical: 8),
-//   //               //           child: ElevatedButton(
-//   //               //             style: ElevatedButton.styleFrom(
-//   //               //               minimumSize: Size(200, 50),
-//   //               //             ),
-//   //               //             onPressed: () => handleAnswer(option),
-//   //               //             child: Text(option),
-//   //               //           ),
-//   //               //         )),
-//   //               //       ],
-//   //               //     ),
-//   //               //   ),
-//   //               // ),
-                
-//   //             ],
-//   //           ),
-//   //   );
-//   // }
-// //adding
-// Widget build(BuildContext context) {
+//   @override
+//   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text('เกมทายมาตราตัวสะกด', 
-//                 style: TextStyle(
-//                   fontFamily: 'Kanit',
-//                   fontSize: 24,
-//                   color: Colors.white,
-//                   fontWeight: FontWeight.bold,
-//                 )),
+//         title: Text(
+//           'เกมทายมาตราตัวสะกด',
+//           style: TextStyle(
+//             fontFamily: 'Kanit',
+//             fontSize: 24,
+//             color: Colors.white,
+//             fontWeight: FontWeight.bold,
+//           ),
+//         ),
 //         flexibleSpace: Container(
 //           decoration: BoxDecoration(
 //             gradient: LinearGradient(
@@ -374,15 +418,18 @@
 //     );
 //   }
 
-//     Widget _buildGameHeader() {
+//   Widget _buildGameHeader() {
 //     return Padding(
 //       padding: EdgeInsets.all(16),
 //       child: Row(
 //         mainAxisAlignment: MainAxisAlignment.spaceAround,
 //         children: [
-//           _buildInfoCard(Icons.timer, 'เวลาเหลือ', 
-//               '${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}',
-//               Colors.blue),
+//           _buildInfoCard(
+//             Icons.timer,
+//             'เวลาเหลือ',
+//             '${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}',
+//             Colors.blue,
+//           ),
 //           _buildInfoCard(Icons.star, 'คะแนน', '$score', Colors.orange),
 //           _buildInfoCard(Icons.close, 'ผิดติดกัน', '${consecutiveWrong}/3', Colors.red),
 //         ],
@@ -459,7 +506,10 @@
 //           mainAxisSpacing: 12,
 //           crossAxisSpacing: 12,
 //           padding: EdgeInsets.only(bottom: 20),
-//           children: currentQuestion?.options.map((option) => _buildOptionButton(option)).toList() ?? [],
+//           children: currentQuestion?.options
+//                   .map((option) => _buildOptionButton(option))
+//                   .toList() ??
+//               [],
 //         ),
 //       ),
 //     );
@@ -484,9 +534,7 @@
 //         color: buttonColor,
 //         borderRadius: BorderRadius.circular(12),
 //         border: Border.all(
-//           color: showFeedback && isCorrectAnswer 
-//               ? Colors.green 
-//               : Colors.grey[300]!,
+//           color: showFeedback && isCorrectAnswer ? Colors.green : Colors.grey[300]!,
 //           width: 2,
 //         ),
 //         boxShadow: [
@@ -553,7 +601,7 @@
 //             ),
 //             SizedBox(width: 8),
 //             Text(
-//               isCorrect 
+//               isCorrect
 //                   ? 'เยี่ยมมาก! คำตอบถูกต้อง'
 //                   : 'เสียใจด้วย! คำตอบที่ถูกคือ ${currentQuestion?.correctAnswer}',
 //               style: TextStyle(
@@ -568,14 +616,39 @@
 //       ),
 //     );
 //   }
+  
+//   void checkAnswer(String selectedAnswer) {
+//   // คำตอบที่ถูกต้อง
+//   String correctAnswer = "${vocabulary.vocab} ${partner.vocab}";
+  
+//   // ตรวจสอบคำตอบ
+//   if (validateAnswer(selectedAnswer, correctAnswer)) {
+//     // ตอบถูก
+//     setState(() {
+//       score += 1;
+//     });
+//   } else {
+//     // ตอบผิด
+//     setState(() {
+//       lives -= 1;
+//       if (lives == 0) {
+//         // แสดงหน้าสรุปคะแนน
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//             builder: (context) => GameSummaryScreen(
+//               score: score,
+//               totalQuestions: totalQuestions,
+//               timeElapsed: timeElapsed,
+//             ),
+//           ),
+//         );
+//       }
+//     });
+//   }
 // }
 
-// //   @override
-// //   void dispose() {
-// //     timer?.cancel();
-// //     super.dispose();
-// //   }
-// // }
+// }
 
 // class QuizQuestion {
 //   final String text;
@@ -587,4 +660,7 @@
 //     required this.correctAnswer,
 //     required this.options,
 //   });
+// }
+// bool validateAnswer(String selectedAnswer, String correctAnswer) {
+//   return selectedAnswer.trim() == correctAnswer.trim();
 // }

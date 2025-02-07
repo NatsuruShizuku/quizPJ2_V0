@@ -46,3 +46,4 @@
 //     return maps.map((e) => Vocabulary.fromMap(e)).toList();
 //   }
 // }
+

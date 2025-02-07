@@ -7,31 +7,6 @@ class Matra {
   Matra({required this.matraID, required this.matraText});
 }
 
-//old ver
-// class QuestionM {
-//   final int questionID;
-//   final String questionText;
-
-//   QuestionM({required this.questionID, required this.questionText});
-  
-//   // เพิ่มเมธอดเพื่อสร้างคำถามตามรูปแบบ
-//   String generateQuestionText(Map<String, dynamic> data) {
-//     switch (questionID) {
-//       case 1:
-//         return "${data['vocab']} $questionText?";
-//       case 2:
-//         return "$questionText ${data['randomWord']}?";
-//       case 3:
-//       case 4:
-//         return "$questionText ${data['matraText']}?";
-//       case 5:
-//       case 6:
-//         return "$questionText?";
-//       default:
-//         return questionText;
-//     }
-//   }
-// }
 class QuestionM {
   final int questionID;
   final String questionText;
@@ -71,13 +46,14 @@ class Vocabulary {
   final int syllable;
   final String vocab;
   final String matraText;
+  final int matraID;
 
   Vocabulary({
     required this.vocabID,
     required this.syllable,
     required this.vocab,
     required this.matraText,
+    required this.matraID,
   });
 
-  static fromMap(map) {}
 }
