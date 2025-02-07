@@ -54,7 +54,13 @@ class _QuizGameState extends State<QuizGame> {
 
     startGame();
   }
-
+  //new code
+String getMatraTextFromID(int matraID) {
+  return matras.firstWhere(
+    (m) => m.matraID == matraID,
+    orElse: () => Matra(matraID: matraID, matraText: ''),
+  ).matraText;
+}
   // เริ่มเกมใหม่
   void startGame() {
     timer?.cancel();
@@ -105,16 +111,25 @@ class _QuizGameState extends State<QuizGame> {
     });
   }
 
-  // String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
-  //   switch (question.answerType) {
-  //     case AnswerType.matraText:
-  //       return vocabulary.matraText;
-  //     case AnswerType.vocab:
-  //       return vocabulary.vocab;
-  //   }
-  // }
-  String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
-  if (question.questionID == 5) {
+String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
+  final random = Random();
+  if (question.questionID == 2) {
+    // สำหรับ QID 2: คำตอบที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary แต่ไม่ใช่คำเดิม
+    List<Vocabulary> sameMatraWords = vocabularies
+        .where((v) => v.matraText == vocabulary.matraText && v.vocabID != vocabulary.vocabID)
+        .toList();
+    return sameMatraWords.isNotEmpty 
+      ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab 
+      : vocabulary.vocab;
+  } else if (question.questionID == 4) {
+    // สำหรับ QID 4: คำตอบที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText ต่างจาก vocabulary
+    List<Vocabulary> differentMatraWords = vocabularies
+        .where((v) => v.matraText != vocabulary.matraText)
+        .toList();
+    return differentMatraWords.isNotEmpty 
+      ? differentMatraWords[random.nextInt(differentMatraWords.length)].vocab 
+      : vocabulary.vocab;
+  } else if (question.questionID == 5) {
     Vocabulary? partner;
     for (var word in vocabularies) {
       if (word.vocabID != vocabulary.vocabID && word.matraText == vocabulary.matraText) {
@@ -130,115 +145,63 @@ class _QuizGameState extends State<QuizGame> {
       : vocabulary.vocab;
 }
 
+
+// --- ฟังก์ชันสร้างตัวเลือก (options) ---
 List<String> _generateOptions(QuestionM question, Vocabulary vocabulary, String correctAnswer) {
-
   final random = Random();
-  // if (question.questionID == 2) {
-  //   // คำตอบที่ถูกต้องต้องมาจากมาตราตัวสะกดเดียวกัน แต่ไม่ใช่คำเดิม
-  //   List<Vocabulary> sameMatraWords = vocabularies
-  //       .where((v) => v.matraText == vocabulary.matraText && v.vocabID != vocabulary.vocabID)
-  //       .toList();
-    
-  //   String correct = sameMatraWords.isNotEmpty 
-  //       ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab 
-  //       : vocabulary.vocab;
-
-  //   // ตัวเลือกที่ผิดต้องมาจากมาตราตัวสะกดอื่น
-  //   List<String> wrongOptions = vocabularies
-  //       .where((v) => v.matraText != vocabulary.matraText)
-  //       .map((v) => v.vocab)
-  //       .toSet()
-  //       .toList();
-    
-  //   List<String> options = [correct];
-  //   while (options.length < 4 && wrongOptions.isNotEmpty) {
-  //     String option = wrongOptions.removeLast();
-  //     if (!options.contains(option)) options.add(option);
-  //   }
-  //   return options..shuffle();
-  // }
   
-// else if (question.questionID == 4) {
-//     // ตัวเลือกที่ผิดมาจากมาตราตัวสะกดเดียวกัน
-//     List<String> wrongOptions = vocabularies
-//         .where((w) => w.matraText == vocabulary.matraText)
-//         .map((w) => w.vocab)
-//         .toSet()
-//         .toList();
-//     wrongOptions.shuffle();
-//     wrongOptions = wrongOptions.take(3).toList();
-
-//     // คำตอบที่ถูกต้องต้องมาจากมาตราตัวสะกดอื่น
-//     List<String> correctOptions = vocabularies
-//         .where((w) => w.matraText != vocabulary.matraText)
-//         .map((w) => w.vocab)
-//         .toSet()
-//         .toList();
-//     correctOptions.shuffle();
-//     String correct = correctOptions.isNotEmpty ? correctOptions.first : '';
-
-//     List<String> options = [correct, ...wrongOptions];
-//     return options..shuffle();
-//   }
   if (question.questionID == 2) {
-  List<Vocabulary> sameMatraWords = vocabularies
-      .where((v) => v.matraText == vocabulary.matraText && v.vocabID != vocabulary.vocabID)
-      .toList();
-  
-  // กำหนดคำตอบที่ถูกต้อง
-  String correct = sameMatraWords.isNotEmpty 
-      ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab 
-      : vocabulary.vocab;
-
-  // ตัวเลือกที่ผิด
-  List<String> wrongOptions = vocabularies
-      .where((v) => v.matraText != vocabulary.matraText && v.vocab != correct)
-      .map((v) => v.vocab)
-      .toSet()
-      .toList();
-  
-  // รวมตัวเลือกทั้งหมด
-  List<String> options = [correct];
-  while (options.length < 4 && wrongOptions.isNotEmpty) {
-    String option = wrongOptions.removeLast();
-    if (!options.contains(option)) options.add(option);
-  }
-  return options..shuffle();
-}
-else if (question.questionID == 4) {
-  // ตัวเลือกที่ผิดมาจากมาตราตัวสะกดเดียวกัน
-  List<String> wrongOptions = vocabularies
-      .where((w) => w.matraText == vocabulary.matraText && w.vocab != vocabulary.vocab)
-      .map((w) => w.vocab)
-      .toSet()
-      .toList();
-  wrongOptions.shuffle();
-  wrongOptions = wrongOptions.take(3).toList();
-
-  // ตัวเลือกคำตอบที่ถูกต้อง
-  List<String> correctOptions = vocabularies
-      .where((w) => w.matraText != vocabulary.matraText)
-      .map((w) => w.vocab)
-      .toSet()
-      .toList();
-  correctOptions.shuffle();
-  
-  String correct = correctOptions.isNotEmpty ? correctOptions.first : vocabulary.vocab;
-
-  // รวมตัวเลือกทั้งหมด
-  List<String> options = [correct, ...wrongOptions];
-  return options..shuffle();
-}
-
-else if (question.questionID == 5) {
-    // Ensure correct answer is the pair of words
+    // QID 2: 
+    // - ตัวเลือกที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary แต่ไม่ใช่คำเดิม
+    List<Vocabulary> sameMatraWords = vocabularies
+        .where((v) => v.matraText == vocabulary.matraText && v.vocabID != vocabulary.vocabID)
+        .toList();
+    // String correct = sameMatraWords.isNotEmpty 
+    //     ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab 
+    //     : vocabulary.vocab;
+     String correct = correctAnswer;
+    // - ตัวเลือกที่ผิดต้องมาจากคำศัพท์ที่มี matraText ต่างจาก vocabulary
+    List<String> wrongOptions = vocabularies
+        .where((v) => v.matraText != vocabulary.matraText)
+        .map((v) => v.vocab)
+        .toSet()
+        .toList();
+    wrongOptions.shuffle();
+    
+    List<String> options = [correct];
+    for (String option in wrongOptions) {
+      if (options.length >= 4) break;
+      if (!options.contains(option)) {
+        options.add(option);
+      }
+    }
+    options.shuffle();
+    return options;
+    
+  } else if (question.questionID == 4) {
+    // QID 4:
+    // - ตัวเลือกที่ผิดต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary 
+    //   แต่ให้ตัดคำศัพท์ที่อยู่ในคำถาม (vocabulary) ออกไป
+    List<String> wrongOptions = vocabularies
+        .where((w) => w.matraText == vocabulary.matraText && w.vocabID != vocabulary.vocabID)
+        .map((w) => w.vocab)
+        .toSet()
+        .toList();
+    wrongOptions.shuffle();
+    wrongOptions = wrongOptions.take(3).toList();
+    
+    String correct = correctAnswer;
+    List<String> options = [correct, ...wrongOptions];
+    options.shuffle();
+    return options;
+    
+  } else if (question.questionID == 5) {
+    // สำหรับ QID 5 (คู่คำศัพท์)
     List<String> options = [correctAnswer];
     Set<String> usedOptions = {correctAnswer};
-
-    // Generate wrong options with words from different matras
     while (options.length < 4) {
-      Vocabulary word1 = vocabularies[Random().nextInt(vocabularies.length)];
-      Vocabulary word2 = vocabularies[Random().nextInt(vocabularies.length)];
+      Vocabulary word1 = vocabularies[random.nextInt(vocabularies.length)];
+      Vocabulary word2 = vocabularies[random.nextInt(vocabularies.length)];
       if (word1.matraText == word2.matraText && word1.matraID == word2.matraID) continue;
       String option = "${word1.vocab} ${word2.vocab}";
       if (!usedOptions.contains(option)) {
@@ -247,77 +210,58 @@ else if (question.questionID == 5) {
       }
     }
     options.shuffle();
-    return options;
-  } 
-  else if (question.questionID == 6) {
-  final answerType = question.answerType;
-  
-  // correct answer: เลือกจากคำที่สุ่มมา (vocabulary)
-  // โดยต้องใช้ค่าที่แสดงออกมาตาม answerType
-  String currentCorrect = (answerType == AnswerType.matraText) ? vocabulary.matraText : vocabulary.vocab;
-  
-  // สำหรับตัวเลือกที่ผิด เราต้องการให้คำทั้งหมดมี matraText เดียวกัน
-  // และต้องแน่ใจว่า matraText ของตัวเลือกที่ผิด (wrongMatra) ไม่ตรงกับ matraText ของคำที่ถูก (vocabulary)
-  
-  // สร้างชุด candidate matraText ที่ไม่เท่ากับ vocabulary.matraText
-  List<String> candidateMatraTexts = vocabularies
-      .map((w) => w.matraText)
-      .where((mt) => mt != vocabulary.matraText)
-      .toSet()
-      .toList();
-  if (candidateMatraTexts.isEmpty) {
-    // กรณีไม่มี candidate ให้ใช้ค่าเริ่มต้น (ไม่ควรเกิดขึ้นถ้าข้อมูลครบ)
-    candidateMatraTexts = ['default'];
-  }
-  // เลือก candidate หนึ่งแบบสุ่มเพื่อเป็น wrongMatra
-  String wrongMatra = candidateMatraTexts[Random().nextInt(candidateMatraTexts.length)];
-  
-  // เก็บคำจาก vocabularies ที่มี matraText ตรงกับ wrongMatra
-  List<String> wrongOptions = vocabularies
-      .where((w) => w.matraText == wrongMatra)
-      .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
-      .toSet()
-      .toList();
-  
-  // หากคำที่ได้มีไม่ถึง 3 ตัว เลือก candidate อื่นเพิ่มเติม
-  if (wrongOptions.length < 3) {
-    for (String candidate in candidateMatraTexts) {
-      wrongMatra = candidate;
-      wrongOptions = vocabularies
-          .where((w) => w.matraText == candidate)
-          .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
-          .toSet()
-          .toList();
-      if (wrongOptions.length >= 3) break;
+    return options..shuffle();
+    
+  } else if (question.questionID == 6) {
+    // QID 6: (ส่วนนี้ไม่เปลี่ยนแปลง)
+    final answerType = question.answerType;
+    String currentCorrect = (answerType == AnswerType.matraText) ? vocabulary.matraText : vocabulary.vocab;
+    List<String> candidateMatraTexts = vocabularies
+        .map((w) => w.matraText)
+        .where((mt) => mt != vocabulary.matraText)
+        .toSet()
+        .toList();
+    if (candidateMatraTexts.isEmpty) {
+      candidateMatraTexts = ['default'];
     }
-  }
-  wrongOptions.shuffle();
-  List<String> finalWrongOptions = wrongOptions.take(3).toList();
-
-  // สร้าง options list โดยผสมตัวเลือกที่ถูกและตัวเลือกที่ผิด
-  List<String> options = [currentCorrect];
-  options.shuffle();
-  options.addAll(finalWrongOptions);
-  return options;
-}
-   else {
-    // ตัวเลือกผิดต้องมีมาตราตัวสะกดต่างจากคำตอบที่ถูก
+    String wrongMatra = candidateMatraTexts[random.nextInt(candidateMatraTexts.length)];
+    List<String> wrongOptions = vocabularies
+        .where((w) => w.matraText == wrongMatra)
+        .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+        .toSet()
+        .toList();
+    if (wrongOptions.length < 3) {
+      for (String candidate in candidateMatraTexts) {
+        wrongMatra = candidate;
+        wrongOptions = vocabularies
+            .where((w) => w.matraText == candidate)
+            .map((w) => (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+            .toSet()
+            .toList();
+        if (wrongOptions.length >= 3) break;
+      }
+    }
+    wrongOptions.shuffle();
+    List<String> finalWrongOptions = wrongOptions.take(3).toList();
+    List<String> options = [currentCorrect];
+    options.shuffle();
+    options.addAll(finalWrongOptions);
+    return options;
+    
+  } else {
+    // Default case (ตัวเลือกผิดต้องมีมาตราตัวสะกดต่างจากคำตอบที่ถูก)
     String correctMatra = (question.answerType == AnswerType.matraText)
         ? correctAnswer
         : vocabulary.matraText;
-
     Set<int> usedVocabIds = {vocabulary.vocabID};
     List<String> options = [correctAnswer];
-
     while (options.length < 4) {
       Vocabulary word = vocabularies[random.nextInt(vocabularies.length)];
       if (usedVocabIds.contains(word.vocabID)) continue;
       if (word.matraText == correctMatra) continue;
-
       String value = (question.answerType == AnswerType.matraText)
           ? word.matraText
           : word.vocab;
-
       if (!options.contains(value)) {
         options.add(value);
         usedVocabIds.add(word.vocabID);
@@ -336,28 +280,7 @@ else if (question.questionID == 5) {
     } while (randomWord.vocabID == excludeId);
     return randomWord;
   }
-  // Matra _getRandomMatra(int excludeId) {
-  //   final random = Random();
-  //   Matra randomMatra;
-  //   do {
-  //     randomMatra = matras[random.nextInt(matras.length)];
-  //   } while (randomMatra.matraID == excludeId);
-  //   return randomMatra;
-  // }
-  // getter answerType ที่ใช้อ้างอิงจาก currentQuestionM
-  // AnswerType get answerType {
-  //   if (currentQuestionM == null) return AnswerType.vocab;
-  //   switch (currentQuestionM!.questionID) {
-  //     case 2:
-  //     case 3:
-  //     case 4:
-  //     case 5:
-  //     case 6:
-  //       return AnswerType.matraText;
-  //     default:
-  //       return AnswerType.vocab;
-  //   }
-  // }
+
   AnswerType get answerType {
   if (currentQuestionM == null) return AnswerType.vocab;
   switch (currentQuestionM!.questionID) {

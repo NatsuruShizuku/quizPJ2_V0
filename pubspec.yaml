@@ -69,7 +69,7 @@ flutter:
     - assets/db/
     - assets/pic/
     - assets/audio/
-    - assets/new_word1.db
+    - assets/new_word2.db
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

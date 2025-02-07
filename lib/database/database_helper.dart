@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter_application_0/models/dataModel.dart';
 
 class DatabaseHelper {
-  static const String _dbName = 'new_word1.db';
+  static const String _dbName = 'new_word2.db';
 
   /// Initialize and return the database
   static Future<Database> _initDatabase() async {
@@ -24,7 +24,7 @@ class DatabaseHelper {
   /// Copy the database from assets to the device
   static Future<void> copyDatabaseFromAssets(String destinationPath) async {
     try {
-      ByteData data = await rootBundle.load('assets/db/$_dbName');
+      ByteData data = await rootBundle.load('assets/$_dbName');
       List<int> bytes = data.buffer.asUint8List();
       await File(destinationPath).writeAsBytes(bytes, flush: true);
     } catch (e) {
