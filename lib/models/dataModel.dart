@@ -57,3 +57,39 @@ class Vocabulary {
   });
 
 }
+
+class HighScore {
+  final int scoreID;
+  final String mode;
+  final String name;
+  final int score;
+  final DateTime timeStamp;
+
+  HighScore({
+    this.scoreID = 0,
+    required this.mode,
+    required this.name,
+    required this.score,
+    required this.timeStamp,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'scoreID': scoreID,
+      'mode': mode,
+      'name': name,
+      'score': score,
+      'timeStamp': timeStamp.toIso8601String(),
+    };
+  }
+
+  factory HighScore.fromMap(Map<String, dynamic> map) {
+    return HighScore(
+      scoreID: map['scoreID'],
+      mode: map['mode'],
+      name: map['name'],
+      score: map['score'],
+      timeStamp: DateTime.parse(map['timeStamp']),
+    );
+  }
+}
