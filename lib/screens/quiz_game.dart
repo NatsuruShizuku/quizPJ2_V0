@@ -6,12 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_0/database/database_helper.dart';
 import 'package:flutter_application_0/models/dataModel.dart';
 import 'package:flutter_application_0/screens/gamesummary.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // import GameSummaryScreen
 
 class QuizGame extends StatefulWidget {
   final String mode;
+  final int initialTime;      // เวลาเริ่มต้น
+  final int scorePerCorrect;
+  final String modeText;
+  final int timeperminite;
 
-  const QuizGame({required this.mode});
+  const QuizGame({
+    required this.mode,
+    required this.initialTime,
+    required this.scorePerCorrect,
+    required this.modeText,
+    required this.timeperminite,
+  });
 
   @override
   _QuizGameState createState() => _QuizGameState();
@@ -25,7 +36,6 @@ class _QuizGameState extends State<QuizGame> {
   List<Matra> matras = [];
   int score = 0;
   int consecutiveWrong = 0;
-  int remainingTime = 180;
   int totalQuestions = 0; // นับจำนวนคำถามที่ตอบไปแล้ว
   Timer? timer;
   QuizQuestion? currentQuestion;
@@ -45,10 +55,13 @@ class _QuizGameState extends State<QuizGame> {
   bool isPaused = false;
   int timeLeft = 60; // เวลาที่เหลือในวินาที
   bool isMusicOn = true; // ควบคุมสถานะเพลงประกอบ
+  late int remainingTime; // จะถูกกำหนดค่าตอน initState จาก widget.initialTime
 
   @override
   void initState() {
     super.initState();
+    remainingTime = widget.initialTime;
+
     initializeGame();
     _checkPopupPreference();
   }
@@ -68,19 +81,19 @@ class _QuizGameState extends State<QuizGame> {
     });
   }
 
-  void _restartGame() {
-    setState(() {
-      timeLeft = 60;
-      isPaused = false;
-    });
-    Navigator.pop(context);
-  }
+  // void _restartGame() {
+  //   setState(() {
+  //     timeLeft = 60;
+  //     isPaused = false;
+  //   });
+  //   Navigator.pop(context);
+  // }
 
-  void _toggleMusic() {
-    setState(() {
-      isMusicOn = !isMusicOn;
-    });
-  }
+  // void _toggleMusic() {
+  //   setState(() {
+  //     isMusicOn = !isMusicOn;
+  //   });
+  // }
 
   void showPauseDialog() {
     showDialog(
@@ -139,7 +152,7 @@ class _QuizGameState extends State<QuizGame> {
           icon: Icon(icon, size: 40, color: color),
           onPressed: onTap,
         ),
-        Text(label, style: TextStyle(fontSize: 14)),
+        Text(label, style: GoogleFonts.chakraPetch(fontSize: 14)),
       ],
     );
   }
@@ -193,11 +206,12 @@ class _QuizGameState extends State<QuizGame> {
       score = 0;
       consecutiveWrong = 0;
       totalQuestions = 0;
-      remainingTime = 180;
       showFeedback = false;
       selectedAnswer = null;
       isCorrect = false;
       isProcessingAnswer = false;
+      remainingTime = widget.initialTime;
+      isPaused = false;
     });
 
     generateNewQuestion();
@@ -440,7 +454,8 @@ class _QuizGameState extends State<QuizGame> {
     setState(() {
       isProcessingAnswer = true;
       selectedAnswer = selectedOption;
-      isCorrect = selectedOption == currentQuestion!.correctAnswer;
+      // isCorrect = selectedOption == currentQuestion!.correctAnswer;
+      isCorrect = (selectedOption == currentQuestion!.correctAnswer);
       showFeedback = true;
       totalQuestions++; // เพิ่มจำนวนคำถามที่ตอบไปแล้ว
     });
@@ -448,7 +463,7 @@ class _QuizGameState extends State<QuizGame> {
     // อัพเดทคะแนนและจำนวนผิดติดต่อกัน
     if (isCorrect) {
       playSound("Correct_Answer.mp3");
-      score++;
+      score+=widget.scorePerCorrect;
       consecutiveWrong = 0;
     } else {
       playSound("Wrong_answer.mp3");
@@ -483,8 +498,9 @@ class _QuizGameState extends State<QuizGame> {
         builder: (context) => GameSummaryScreen(
           score: score,
           totalQuestions: totalQuestions,
-          timeElapsed: 180 - remainingTime,
+          timeElapsed: widget.initialTime - remainingTime,
           mode: widget.mode,
+          scorePerCorrect: widget.scorePerCorrect,
         ),
       ),
     );
@@ -497,13 +513,6 @@ class _QuizGameState extends State<QuizGame> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          // decoration: BoxDecoration(
-          //   gradient: LinearGradient(
-          //     colors: [Colors.white, Colors.blue[50]!],
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //   ),
-          // ),
           width: screenSize.width,
           height: screenSize.height,
           decoration: const BoxDecoration(
@@ -526,21 +535,6 @@ class _QuizGameState extends State<QuizGame> {
     );
   }
 
-// Container(
-//                           decoration: BoxDecoration(
-//                             color: Colors.red.withOpacity(0.9),
-//                             shape: BoxShape.circle,
-//                             border: Border.all(color: Colors.white, width: 2),
-//                           ),
-//                           child: IconButton(
-//                             icon: Icon(Icons.close,
-//                                 color: Colors.white, size: 35),
-//                             onPressed: () {
-//                               _savePopupPreference(showPopupNextTime);
-//                               Navigator.pop(context);
-//                             },
-//                           ),
-//                         ),
   Widget _buildpauseIcon() {
     return Padding(
       padding: EdgeInsets.all(8),
@@ -599,9 +593,9 @@ class _QuizGameState extends State<QuizGame> {
           Icon(icon, size: 30, color: color),
           SizedBox(height: 5),
           Text(title,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              style: GoogleFonts.chakraPetch(fontSize: 14, fontWeight: FontWeight.bold)),
           Text(value,
-              style: TextStyle(
+              style: GoogleFonts.chakraPetch(
                   fontSize: 18, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
@@ -635,7 +629,7 @@ class _QuizGameState extends State<QuizGame> {
             children: [
               SizedBox(height: 30),
               Text(value,
-                  style: TextStyle(
+                  style: GoogleFonts.chakraPetch(
                       fontSize: 18, fontWeight: FontWeight.bold, color: color)),
               SizedBox(height: 30),
             ],
@@ -838,7 +832,7 @@ class _QuizGameState extends State<QuizGame> {
     if (validateAnswer(selectedAnswer, correctAnswer)) {
       // ตอบถูก
       setState(() {
-        score += 1;
+        score += widget.scorePerCorrect;
       });
     } else {
       // ตอบผิด
@@ -853,7 +847,8 @@ class _QuizGameState extends State<QuizGame> {
                 score: score,
                 totalQuestions: totalQuestions,
                 timeElapsed: timeElapsed,
-                mode: 'Easy',
+                mode: widget.mode,
+                scorePerCorrect: widget.scorePerCorrect,
               ),
             ),
           );
@@ -861,24 +856,6 @@ class _QuizGameState extends State<QuizGame> {
       });
     }
   }
-}
-
-class QuizQuestion {
-  final String text;
-  final String correctAnswer;
-  final List<String> options;
-
-  QuizQuestion({
-    required this.text,
-    required this.correctAnswer,
-    required this.options,
-  });
-}
-
-bool validateAnswer(String selectedAnswer, String correctAnswer) {
-  return selectedAnswer.trim() == correctAnswer.trim();
-}
-
 void showGameSettingsPopup(BuildContext context) {
   bool showPopupNextTime = true;
   showDialog(
@@ -940,8 +917,8 @@ void showGameSettingsPopup(BuildContext context) {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Text(
-                      'ระดับง่าย',
-                      style: TextStyle(
+                      widget.modeText,
+                      style: GoogleFonts.chakraPetch(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
@@ -950,9 +927,9 @@ void showGameSettingsPopup(BuildContext context) {
                   SizedBox(height: 15),
 
                   // รายการการตั้งค่า
-                  _buildSettingItem('กำหนดเวลา', '3 นาที'),
-                  _buildSettingItem('ตอบถูกข้อละ', '10 คะแนน'),
-                  _buildSettingItem('ตอบผิดติดกันได้', '3 ครั้ง'),
+                  _buildSettingItem('กำหนดเวลา', widget.timeperminite.toString(),' นาที'),
+                  _buildSettingItem('ตอบถูกข้อละ',widget.scorePerCorrect.toString() ,' คะแนน'),
+                  _buildSettingItem('ตอบผิดติดกันได้', '3',' ครั้ง'),
 
                   SizedBox(height: 10),
 
@@ -970,7 +947,7 @@ void showGameSettingsPopup(BuildContext context) {
                       ),
                       Text(
                         'เปิดข้อความนี้เมื่อเริ่มเกมทุกครั้ง',
-                        style: TextStyle(fontSize: 16),
+                        style: GoogleFonts.chakraPetch(fontSize: 16),
                       ),
                     ],
                   ),
@@ -985,6 +962,26 @@ void showGameSettingsPopup(BuildContext context) {
   );
 }
 
+}
+
+class QuizQuestion {
+  final String text;
+  final String correctAnswer;
+  final List<String> options;
+
+  QuizQuestion({
+    required this.text,
+    required this.correctAnswer,
+    required this.options,
+  });
+}
+
+bool validateAnswer(String selectedAnswer, String correctAnswer) {
+  return selectedAnswer.trim() == correctAnswer.trim();
+}
+
+
+
 // ฟังก์ชันบันทึกค่าความต้องการของผู้ใช้
 Future<void> _savePopupPreference(bool value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -992,7 +989,7 @@ Future<void> _savePopupPreference(bool value) async {
 }
 
 // ฟังก์ชันสร้างกล่องแสดงข้อมูล
-Widget _buildSettingItem(String title, String value) {
+Widget _buildSettingItem(String title,String scoreText ,String value) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 8),
     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -1012,11 +1009,12 @@ Widget _buildSettingItem(String title, String value) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(title, style: TextStyle(fontSize: 20, color: Colors.black)),
+        Text(title, style: GoogleFonts.chakraPetch(fontSize: 20, color: Colors.black)),
         SizedBox(height: 5),
-        Text(value,
-            style: TextStyle(
+        Text(
+                overflow: TextOverflow.ellipsis, '$scoreText $value',style: GoogleFonts.chakraPetch(
                 fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red)),
+
       ],
     ),
   );

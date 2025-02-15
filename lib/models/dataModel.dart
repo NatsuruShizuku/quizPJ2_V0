@@ -58,15 +58,50 @@ class Vocabulary {
 
 }
 
+// class HighScore {
+//   final int? id;
+//   final String mode;
+//   final String playerName; // เปลี่ยนจาก name เป็น playerName
+//   final int score;
+//   final DateTime timestamp; // เปลี่ยนจาก timeStamp เป็น timestamp
+
+//   HighScore({
+//     this.id,
+//     required this.mode,
+//     required this.playerName,
+//     required this.score,
+//     required this.timestamp,
+//   });
+
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'mode': mode,
+//       'playerName': playerName,
+//       'score': score,
+//       'timestamp': timestamp.toIso8601String(),
+//     };
+//   }
+
+//   factory HighScore.fromMap(Map<String, dynamic> map) {
+//     return HighScore(
+//       id: map['id'],
+//       mode: map['mode'],
+//       playerName: map['playerName'],
+//       score: map['score'],
+//       timestamp: DateTime.parse(map['timestamp']),
+//     );
+//   }
+// }
+
 class HighScore {
-  final int scoreID;
+  // final int scoreID;
   final String mode;
   final String name;
   final int score;
   final DateTime timeStamp;
 
   HighScore({
-    this.scoreID = 0,
+    // required this.scoreID,
     required this.mode,
     required this.name,
     required this.score,
@@ -75,7 +110,7 @@ class HighScore {
 
   Map<String, dynamic> toMap() {
     return {
-      'scoreID': scoreID,
+      // 'scoreID': scoreID,
       'mode': mode,
       'name': name,
       'score': score,
@@ -85,10 +120,10 @@ class HighScore {
 
   factory HighScore.fromMap(Map<String, dynamic> map) {
     return HighScore(
-      scoreID: map['scoreID'],
-      mode: map['mode'],
-      name: map['name'],
-      score: map['score'],
+      // scoreID: map['scoreID'] ?? 0,
+      mode: map['mode'] ?? '',
+      name: map['name'] ?? '',
+      score: map['score'] ?? 0,
       timeStamp: DateTime.parse(map['timeStamp']),
     );
   }

@@ -9,36 +9,80 @@ class DatabaseHelper {
   static const String _dbName = 'new_word3.db';
 
   /// Initialize and return the database
-  static Future<Database> _initDatabase() async {
+  // static Future<Database> _initDatabase() async {
+  //   final dbPath = await getDatabasesPath();
+  //   final path = join(dbPath, _dbName);
+
+  //   // Check if database exists; if not, copy from assets
+  //   if (!await databaseExists(path)) {
+  //     await copyDatabaseFromAssets(path);
+  //   }
+
+  //   return await openDatabase(path);
+
+  // }
+   static Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, _dbName);
 
-    // Check if database exists; if not, copy from assets
     if (!await databaseExists(path)) {
       await copyDatabaseFromAssets(path);
     }
 
-    return await openDatabase(path);
+    final db = await openDatabase(path);
 
+    // สร้างตาราง HighScores หากไม่มี
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS HighScores (
+        mode TEXT NOT NULL,
+        name TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        timeStamp TEXT NOT NULL
+      )
+    ''');
+
+    return db;
   }
-static Future<Database> _initDatabaseScore() async {
-  final dbPath = await getDatabasesPath();
-  final path = join(dbPath, _dbName);
-  final db = await openDatabase(path);
 
-  // เพิ่มการสร้างตาราง HighScores
-  await db.execute('''
-    CREATE TABLE IF NOT EXISTS HighScores (
-      scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
-      mode TEXT NOT NULL,
-      name TEXT NOT NULL,
-      score INTEGER NOT NULL,
-      timeStamp TEXT NOT NULL
-    )
-  ''');
+  static Future<void> insertHighScore(HighScore highScore) async {
+    final db = await _initDatabase();
+    await db.insert(
+      'HighScores',
+      highScore.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
-  return db;
-}
+  static Future<List<HighScore>> getHighScores(String mode) async {
+    final db = await _initDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'HighScores',
+      where: 'mode = ?',
+      whereArgs: [mode],
+      orderBy: 'score DESC, timeStamp DESC',
+    );
+    return maps.map(HighScore.fromMap).toList();
+  }
+
+
+// static Future<Database> _initDatabaseScore() async {
+//   final dbPath = await getDatabasesPath();
+//   final path = join(dbPath, _dbName);
+//   final db = await openDatabase(path);
+
+//   // เพิ่มการสร้างตาราง HighScores
+//   await db.execute('''
+//     CREATE TABLE IF NOT EXISTS HighScores (
+//       scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
+//       mode TEXT NOT NULL,
+//       name TEXT NOT NULL,
+//       score INTEGER NOT NULL,
+//       timeStamp TEXT NOT NULL
+//     )
+//   ''');
+
+//   return db;
+// }
   /// Copy the database from assets to the device
   static Future<void> copyDatabaseFromAssets(String destinationPath) async {
     try {
@@ -90,24 +134,34 @@ static Future<Database> _initDatabaseScore() async {
     )).toList();
   }
 
-   static Future<void> insertHighScore(HighScore highScore) async {
-  final db = await _initDatabaseScore();
-  await db.insert(
-    'HighScores',
-    highScore.toMap()..remove('id'), // ไม่รวมคอลัมน์ id
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
-}
+//    static Future<void> insertHighScore(HighScore highScore) async {
+//   final db = await _initDatabaseScore();
+//   await db.insert(
+//     'HighScores',
+//     highScore.toMap()..remove('id'), // ไม่รวมคอลัมน์ id
+//     conflictAlgorithm: ConflictAlgorithm.replace,
+//   );
+// }
 
-  static Future<List<HighScore>> getHighScores(String mode) async {
-    final db = await _initDatabaseScore();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'HighScores',
-      where: 'mode = ?',
-      whereArgs: [mode],
-      orderBy: 'score DESC, timestamp DESC',
-    );
+  // static Future<List<HighScore>> getHighScores(String mode) async {
+  //   final db = await _initDatabaseScore();
+  //   final List<Map<String, dynamic>> maps = await db.query(
+  //     'HighScores',
+  //     where: 'mode = ?',
+  //     whereArgs: [mode],
+  //     orderBy: 'score DESC, timestamp DESC',
+  //   );
 
-    return maps.map((map) => HighScore.fromMap(map)).toList();
-  }
+  //   return maps.map((map) => HighScore.fromMap(map)).toList();
+  // }
+//   static Future<List<HighScore>> getHighScores(String mode) async {
+//   final db = await _initDatabase();
+//   final List<Map<String, dynamic>> maps = await db.query(
+//     'HighScores',
+//     where: 'mode = ?',
+//     whereArgs: [mode],
+//     orderBy: 'score DESC, timestamp DESC',
+//   );
+//   return maps.map(HighScore.fromMap).toList();
+// }
 }
