@@ -136,6 +136,15 @@ class _QuizGameState extends State<QuizGame> {
                   },
                   Colors.yellow.shade700,
                 ),
+                _buildIconButton(
+                  Icons.question_mark,
+                  "ดูข้อมูล",
+                  () {
+                    showGameSettingsPopup(context);
+                    // Navigator.pop(context); // กลับไปหน้าหลัก
+                  },
+                  Colors.black45,
+                ),
               ],
             ),
           ],
@@ -181,7 +190,7 @@ class _QuizGameState extends State<QuizGame> {
     bool shouldShowPopup = prefs.getBool('show_popup') ?? true;
 
     if (shouldShowPopup) {
-      Future.delayed(Duration(milliseconds: 500), () {
+      Future.delayed(Duration(milliseconds: 350), () {
         showGameSettingsPopup(context);
       });
     }
@@ -641,7 +650,7 @@ class _QuizGameState extends State<QuizGame> {
 
   Widget _buildQuestionCard() {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 260),
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -996,7 +1005,8 @@ Widget _buildSettingItem(String title,String scoreText ,String value) {
     constraints: BoxConstraints(
       minHeight: 60,
       maxHeight: 100,
-      minWidth: double.infinity,
+      // minWidth: double.infinity,
+      minWidth: 300,
     ),
     decoration: BoxDecoration(
       gradient: LinearGradient(
@@ -1009,7 +1019,7 @@ Widget _buildSettingItem(String title,String scoreText ,String value) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(title, style: GoogleFonts.chakraPetch(fontSize: 20, color: Colors.black)),
+        Text(title, style: GoogleFonts.chakraPetch(fontSize: 22, color: Colors.black)),
         SizedBox(height: 5),
         Text(
                 overflow: TextOverflow.ellipsis, '$scoreText $value',style: GoogleFonts.chakraPetch(

@@ -25,13 +25,13 @@ class QuestionM {
   String generateQuestionText(Vocabulary vocabulary, Vocabulary randomWord) {
     switch (questionID) {
       case 1:
-        return "${vocabulary.vocab} $questionText?";
+        return "${vocabulary.vocab} ''$questionText?''";
       case 2:
-        return "$questionText ${vocabulary.vocab}?";
+        return "$questionText ''${vocabulary.vocab}?''";
       case 3:
-        return "$questionText ${vocabulary.matraText}?";
+        return "$questionText ''${vocabulary.matraText}?''";
       case 4:
-        return "$questionText ${vocabulary.matraText}?";
+        return "$questionText ''${vocabulary.matraText}?''";
       case 5:
       case 6:
         return "$questionText?";

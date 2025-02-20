@@ -177,31 +177,31 @@ void _navigateToPage(String buttonType) async {
               ),
               
               // Settings Icon Button
-              Positioned(
-                bottom: screenSize.height * 0.02,
-                right: screenSize.width * 0.05,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: screenSize.width * 0.08,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingMenuQ(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   bottom: screenSize.height * 0.02,
+              //   right: screenSize.width * 0.05,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       color: Colors.black.withOpacity(0.3),
+              //       shape: BoxShape.circle,
+              //     ),
+              //     child: IconButton(
+              //       icon: Icon(
+              //         Icons.settings,
+              //         color: Colors.white,
+              //         size: screenSize.width * 0.08,
+              //       ),
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) => const SettingMenuQ(),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

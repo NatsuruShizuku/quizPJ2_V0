@@ -114,9 +114,9 @@ class WelcomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 45),
                       child:
                           Text(
-                        "เกมฝึกทักษะภาษาไทย: มาตราตัวสะกด",
+                        "แอปพลิเคชันฝึกทักษะภาษาไทย  : มาตราตัวสะกด",
                         style: GoogleFonts.chakraPetch(
-                          fontSize: 25,
+                          fontSize: 22,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1,
                           wordSpacing: 2,

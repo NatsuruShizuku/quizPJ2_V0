@@ -73,7 +73,7 @@ flutter:
     - assets/db/
     - assets/pic/
     - assets/sounds/
-    - assets/new_word3.db
+    - assets/new_word4.db
     - assets/google_fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
