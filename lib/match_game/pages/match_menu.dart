@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_0/screens/highscore.dart';
-import 'package:flutter_application_0/screens/highscorescreen.dart';
-import 'package:flutter_application_0/screens/howtoplay.dart';
-import 'package:flutter_application_0/screens/select_quiz.dart';
+import 'package:flutter_application_0/match_game/pages/game_level.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class QuizMenu extends StatefulWidget {
-  const QuizMenu({super.key});
+class MatchMenu extends StatefulWidget {
+  const MatchMenu({super.key});
   
-  get mode => 'Medium';
   @override
-  State<QuizMenu> createState() => _QuizMenuState();
+  State<MatchMenu> createState() => _MatchMenuState();
 }
 
-class _QuizMenuState extends State<QuizMenu> {
+class _MatchMenuState extends State<MatchMenu> {
 
 void _navigateToPage(String buttonType) async {
   switch (buttonType) {
     case 'เล่น':
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const SelectQuiz()),
-      );
-      break;
-    case 'วิธีการเล่น':
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HowToPlay()),
-      );
-      break;
-    case 'คะแนนสูงสุด':
-      final prefs = await SharedPreferences.getInstance();
-      String mode = prefs.getString('lastMode') ?? 'Medium'; // ดึงโหมดที่บันทึกไว้
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HighScoreTableScreen(mode: mode),
-        ),
+        MaterialPageRoute(builder: (context) => const GameLevel()),
       );
       break;
   }
@@ -56,14 +36,14 @@ void _navigateToPage(String buttonType) async {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                'assets/pic/button1.png',
+                'assets/images/button6.png',
                 fit: BoxFit.fill,
               ),
               Center(
                 child: Text(
                   text,
                   style: GoogleFonts.chakraPetch(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: screenSize.width * 0.071,
                     fontWeight: FontWeight.bold,
                   ),
@@ -86,7 +66,7 @@ void _navigateToPage(String buttonType) async {
         height: screenSize.height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/pic/background.jpg"),
+            image: AssetImage("assets/images/background3.png"),
             fit: BoxFit.cover,
           ),
         ),
@@ -105,13 +85,13 @@ void _navigateToPage(String buttonType) async {
                       child: Stack(
                         children: [
                           Image.asset(
-                            'assets/pic/sign1.png',
+                            'assets/images/sign4.png',
                             width: screenSize.width * 0.925,
                             height: screenSize.height * 0.25,
                             fit: BoxFit.contain,
                           ),
                           Positioned(
-                            top: screenSize.height * 0.08,
+                            top: screenSize.height * 0.078,
                             left: 0,
                             right: 0,
                             child: Column(
@@ -119,15 +99,15 @@ void _navigateToPage(String buttonType) async {
                                 Text(
                                   "เกม",
                                   style: GoogleFonts.chakraPetch(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontSize: screenSize.width * 0.08,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  "ตอบคำถาม",
+                                  "จับคู่คำศัพท์",
                                   style: GoogleFonts.chakraPetch(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontSize: screenSize.width * 0.08,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -146,7 +126,7 @@ void _navigateToPage(String buttonType) async {
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: ['เล่น', 'วิธีการเล่น', 'คะแนนสูงสุด']
+                        children: ['เล่น']
                             .map((text) => _buildButton(text, screenSize))
                             .toList(),
                       ),
@@ -155,7 +135,6 @@ void _navigateToPage(String buttonType) async {
                 ),
               ),
               
- 
             ],
           ),
         ),

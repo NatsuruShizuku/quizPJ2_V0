@@ -8,19 +8,7 @@ import 'package:flutter_application_0/models/dataModel.dart';
 class DatabaseHelper {
   static const String _dbName = 'new_word4.db';
 
-  /// Initialize and return the database
-  // static Future<Database> _initDatabase() async {
-  //   final dbPath = await getDatabasesPath();
-  //   final path = join(dbPath, _dbName);
 
-  //   // Check if database exists; if not, copy from assets
-  //   if (!await databaseExists(path)) {
-  //     await copyDatabaseFromAssets(path);
-  //   }
-
-  //   return await openDatabase(path);
-
-  // }
    static Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, _dbName);
@@ -64,26 +52,8 @@ class DatabaseHelper {
     return maps.map(HighScore.fromMap).toList();
   }
 
-
-// static Future<Database> _initDatabaseScore() async {
-//   final dbPath = await getDatabasesPath();
-//   final path = join(dbPath, _dbName);
-//   final db = await openDatabase(path);
-
-//   // เพิ่มการสร้างตาราง HighScores
-//   await db.execute('''
-//     CREATE TABLE IF NOT EXISTS HighScores (
-//       scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
-//       mode TEXT NOT NULL,
-//       name TEXT NOT NULL,
-//       score INTEGER NOT NULL,
-//       timeStamp TEXT NOT NULL
-//     )
-//   ''');
-
-//   return db;
-// }
   /// Copy the database from assets to the device
+
   static Future<void> copyDatabaseFromAssets(String destinationPath) async {
     try {
       ByteData data = await rootBundle.load('assets/$_dbName');
@@ -134,34 +104,4 @@ class DatabaseHelper {
     )).toList();
   }
 
-//    static Future<void> insertHighScore(HighScore highScore) async {
-//   final db = await _initDatabaseScore();
-//   await db.insert(
-//     'HighScores',
-//     highScore.toMap()..remove('id'), // ไม่รวมคอลัมน์ id
-//     conflictAlgorithm: ConflictAlgorithm.replace,
-//   );
-// }
-
-  // static Future<List<HighScore>> getHighScores(String mode) async {
-  //   final db = await _initDatabaseScore();
-  //   final List<Map<String, dynamic>> maps = await db.query(
-  //     'HighScores',
-  //     where: 'mode = ?',
-  //     whereArgs: [mode],
-  //     orderBy: 'score DESC, timestamp DESC',
-  //   );
-
-  //   return maps.map((map) => HighScore.fromMap(map)).toList();
-  // }
-//   static Future<List<HighScore>> getHighScores(String mode) async {
-//   final db = await _initDatabase();
-//   final List<Map<String, dynamic>> maps = await db.query(
-//     'HighScores',
-//     where: 'mode = ?',
-//     whereArgs: [mode],
-//     orderBy: 'score DESC, timestamp DESC',
-//   );
-//   return maps.map(HighScore.fromMap).toList();
-// }
 }

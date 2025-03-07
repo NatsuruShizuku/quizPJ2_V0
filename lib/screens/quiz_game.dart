@@ -264,7 +264,7 @@ class _QuizGameState extends State<QuizGame> {
   String _getCorrectAnswer(QuestionM question, Vocabulary vocabulary) {
     final random = Random();
     if (question.questionID == 2) {
-      // สำหรับ QID 2: คำตอบที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary แต่ไม่ใช่คำเดิม
+
       List<Vocabulary> sameMatraWords = vocabularies
           .where((v) =>
               v.matraText == vocabulary.matraText &&
@@ -274,7 +274,7 @@ class _QuizGameState extends State<QuizGame> {
           ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab
           : vocabulary.vocab;
     } else if (question.questionID == 4) {
-      // สำหรับ QID 4: คำตอบที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText ต่างจาก vocabulary
+
       List<Vocabulary> differentMatraWords = vocabularies
           .where((v) => v.matraText != vocabulary.matraText)
           .toList();
@@ -299,24 +299,23 @@ class _QuizGameState extends State<QuizGame> {
         : vocabulary.vocab;
   }
 
-// --- ฟังก์ชันสร้างตัวเลือก (options) ---
+
   List<String> _generateOptions(
       QuestionM question, Vocabulary vocabulary, String correctAnswer) {
     final random = Random();
 
     if (question.questionID == 2) {
-      // QID 2:
-      // - ตัวเลือกที่ถูกต้องต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary แต่ไม่ใช่คำเดิม
+
       List<Vocabulary> sameMatraWords = vocabularies
           .where((v) =>
               v.matraText == vocabulary.matraText &&
               v.vocabID != vocabulary.vocabID)
           .toList();
-      // String correct = sameMatraWords.isNotEmpty
+
       //     ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab
-      //     : vocabulary.vocab;
+
       String correct = correctAnswer;
-      // - ตัวเลือกที่ผิดต้องมาจากคำศัพท์ที่มี matraText ต่างจาก vocabulary
+
       List<String> wrongOptions = vocabularies
           .where((v) => v.matraText != vocabulary.matraText)
           .map((v) => v.vocab)
@@ -334,9 +333,7 @@ class _QuizGameState extends State<QuizGame> {
       options.shuffle();
       return options;
     } else if (question.questionID == 4) {
-      // QID 4:
-      // - ตัวเลือกที่ผิดต้องมาจากคำศัพท์ที่มี matraText เดียวกับ vocabulary
-      //   แต่ให้ตัดคำศัพท์ที่อยู่ในคำถาม (vocabulary) ออกไป
+
       List<String> wrongOptions = vocabularies
           .where((w) =>
               w.matraText == vocabulary.matraText &&
@@ -352,7 +349,7 @@ class _QuizGameState extends State<QuizGame> {
       options.shuffle();
       return options;
     } else if (question.questionID == 5) {
-      // สำหรับ QID 5 (คู่คำศัพท์)
+
       List<String> options = [correctAnswer];
       Set<String> usedOptions = {correctAnswer};
       while (options.length < 4) {
@@ -369,7 +366,7 @@ class _QuizGameState extends State<QuizGame> {
       options.shuffle();
       return options..shuffle();
     } else if (question.questionID == 6) {
-      // QID 6: (ส่วนนี้ไม่เปลี่ยนแปลง)
+
       final answerType = question.answerType;
       String currentCorrect = (answerType == AnswerType.matraText)
           ? vocabulary.matraText
@@ -410,7 +407,7 @@ class _QuizGameState extends State<QuizGame> {
       options.shuffle();
       return options;
     } else {
-      // Default case (ตัวเลือกผิดต้องมีมาตราตัวสะกดต่างจากคำตอบที่ถูก)
+
       String correctMatra = (question.answerType == AnswerType.matraText)
           ? correctAnswer
           : vocabulary.matraText;
@@ -456,20 +453,19 @@ class _QuizGameState extends State<QuizGame> {
     }
   }
 
-  // เมื่อผู้เล่นตอบคำถาม
+
   void handleAnswer(String selectedOption) {
     if (isProcessingAnswer || currentQuestion == null) return;
 
     setState(() {
       isProcessingAnswer = true;
       selectedAnswer = selectedOption;
-      // isCorrect = selectedOption == currentQuestion!.correctAnswer;
+
       isCorrect = (selectedOption == currentQuestion!.correctAnswer);
       showFeedback = true;
-      totalQuestions++; // เพิ่มจำนวนคำถามที่ตอบไปแล้ว
+      totalQuestions++; 
     });
 
-    // อัพเดทคะแนนและจำนวนผิดติดต่อกัน
     if (isCorrect) {
       playSound("Correct_Answer.mp3");
       score+=widget.scorePerCorrect;
@@ -486,7 +482,6 @@ class _QuizGameState extends State<QuizGame> {
         isProcessingAnswer = false;
       });
 
-      // จบเกมเมื่อหมดเวลา หรือถ้าตอบผิดครบ 3 ครั้ง
       if (remainingTime <= 0 || consecutiveWrong >= 3) {
         endGame();
       } else {

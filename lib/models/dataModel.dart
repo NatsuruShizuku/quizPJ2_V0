@@ -58,40 +58,6 @@ class Vocabulary {
 
 }
 
-// class HighScore {
-//   final int? id;
-//   final String mode;
-//   final String playerName; // เปลี่ยนจาก name เป็น playerName
-//   final int score;
-//   final DateTime timestamp; // เปลี่ยนจาก timeStamp เป็น timestamp
-
-//   HighScore({
-//     this.id,
-//     required this.mode,
-//     required this.playerName,
-//     required this.score,
-//     required this.timestamp,
-//   });
-
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'mode': mode,
-//       'playerName': playerName,
-//       'score': score,
-//       'timestamp': timestamp.toIso8601String(),
-//     };
-//   }
-
-//   factory HighScore.fromMap(Map<String, dynamic> map) {
-//     return HighScore(
-//       id: map['id'],
-//       mode: map['mode'],
-//       playerName: map['playerName'],
-//       score: map['score'],
-//       timestamp: DateTime.parse(map['timestamp']),
-//     );
-//   }
-// }
 
 class HighScore {
   // final int scoreID;

@@ -155,13 +155,7 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
                             "เล่นใหม่",
                             () {
                               Navigator.pop(context);
-                              // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) =>
-                                //       HighScoreTableScreen(mode: widget.mode),
-                                // ),
-                              // );
+                            
                             },
                             Colors.blueAccent,
                           ),
