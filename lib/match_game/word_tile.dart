@@ -14,14 +14,12 @@ class WordTile extends StatefulWidget {
   const WordTile({
     required this.index,
     required this.word,
-    // required this.hasImage,
     required this.isMatched,
     Key? key,
   }) : super(key: key);
 
   final int index;
   final Word word;
-  // final bool hasImage;
   final bool isMatched;
 
   @override
@@ -64,9 +62,8 @@ class _WordTileState extends State<WordTile> {
               }
             },
             onDoubleTap: () {
-              // if (widget.hasImage &&
                 if( widget.word.contents.isNotEmpty &&
-                  _isCardFlipped) { // ตรวจสอบการ์ดหงาย
+                  _isCardFlipped) {
                 _showFullImage(context, widget.word.contents);
               }
             },
@@ -86,7 +83,7 @@ class _WordTileState extends State<WordTile> {
               },
               onFlipStateChanged: (isFront) {
                 setState(() {
-                  _isCardFlipped = isFront; // อัปเดตสถานะการหงาย
+                  _isCardFlipped = isFront;
                 });
               },
             ),

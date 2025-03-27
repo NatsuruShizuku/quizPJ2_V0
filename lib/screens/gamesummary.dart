@@ -55,7 +55,6 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
 
     await DatabaseHelper.insertHighScore(newScore);
 
-    // ไปยังหน้าคะแนนสูงสุด
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -74,7 +73,6 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
         : 0;
 
     return Scaffold(
-      // Scaffold จะปรับขนาดหน้าจอให้เมื่อมี keyboard โผล่ขึ้น (ค่าเริ่มต้นคือ true)
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
@@ -85,7 +83,6 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
           ),
         ),
         child: SafeArea(
-          // SingleChildScrollView ช่วยให้หน้าจอเลื่อนขึ้นลงเมื่อ keyboard โผล่ขึ้น
           child: SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(
               30,
@@ -109,10 +106,10 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
                     const SizedBox(height: 20),
                     _buildStatRow('คะแนนได้', '${widget.score} คะแนน'),
                     _buildStatRow('ความแม่นยำ', '$accuracy%'),
-                    _buildStatRow('เวลาที่ใช้', '${widget.timeElapsed} วินาที'),
+                    _buildStatRow('เวลาที่ใช้', _formatTime(widget.timeElapsed)),
                     _buildStatRow(
                         'ตอบถูก',
-                        '${(widget.score / widget.scorePerCorrect).toInt()}/${widget.totalQuestions}'),
+                        '${(widget.score / widget.scorePerCorrect).toInt()}/${widget.totalQuestions} ข้อ'),
                     if (isHighScore) ...[
                       const SizedBox(height: 20),
                       TextField(
@@ -167,7 +164,7 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
                             "หน้าหลัก",
                             () {
                               Navigator.pop(context);
-                              Navigator.pop(context); // กลับไปหน้าหลัก
+                              Navigator.pop(context);
                             },
                             Colors.redAccent,
                           ),
@@ -200,6 +197,12 @@ class _GameSummaryScreenState extends State<GameSummaryScreen> {
       ),
     );
   }
+  
+  String _formatTime(int totalSeconds) {
+  int minutes = totalSeconds ~/ 60;
+  int seconds = totalSeconds % 60;
+  return '${minutes.toString().padLeft(2, '0')} : ${seconds.toString().padLeft(2, '0')} นาที';
+}
 }
 
 Widget _buildIconButton(

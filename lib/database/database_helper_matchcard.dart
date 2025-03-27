@@ -16,7 +16,7 @@ class DatabaseHelper {
   static final columnId = 'id';
   static final columnDescrip = 'descrip';
   static final columnContents = 'contents';
-  static final columnMatraID = 'matraID';
+  static final columnFCID = 'fcID';
 
   static Database? _database;
   
@@ -36,8 +36,7 @@ class DatabaseHelper {
     if (!await databaseExists(path)) {
       await copyDatabaseFromAssets(path);
     }
-    // Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    // String path = join(documentsDirectory.path, _databaseName);
+
     return await openDatabase(
       path,
       version: _databaseVersion,
@@ -51,7 +50,7 @@ class DatabaseHelper {
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnDescrip TEXT NOT NULL,
         $columnContents BLOB NOT NULL,
-        $columnMatraID INTEGER NOT NULL
+        $columnFCID INTEGER NOT NULL
       )
     ''');
   }
@@ -66,10 +65,6 @@ class DatabaseHelper {
     }
   }
 
-  // Future<int> insertWord(Map<String, dynamic> row) async {
-  //   Database db = await instance.database;
-  //   return await db.insert(table, row);
-  // }
 
   Future<List<Map<String, dynamic>>> queryAllWords() async {
     Database db = await instance.database;

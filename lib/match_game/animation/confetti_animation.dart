@@ -17,7 +17,7 @@ class _ConfettiAnimationState extends State<ConfettiAnimation> {
 
   @override
 void didUpdateWidget(covariant ConfettiAnimation oldWidget) {
-  if (widget.animate && !oldWidget.animate) { // เรียกเมื่อ animate เปลี่ยนจาก false เป็น true เท่านั้น
+  if (widget.animate && !oldWidget.animate) {
     _controller.play();
   }
   super.didUpdateWidget(oldWidget);

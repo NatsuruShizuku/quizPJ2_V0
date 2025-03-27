@@ -4,7 +4,7 @@ class QuestionModels {
   
 
   QuestionModels( {
-    required this.questionID, // เลขโมเดล
+    required this.questionID, 
     required this.questionTEXT,
   });
 

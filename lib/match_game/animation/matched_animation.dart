@@ -69,7 +69,7 @@ void didUpdateWidget(covariant MatchedAnimation oldWidget) {
         if (widget.numberOfWordsAnswered == 16) {
           _correctColor = Colors.purpleAccent;
         }
-        if (_controller.status != AnimationStatus.forward) { // ตรวจสอบสถานะก่อนเล่น
+        if (_controller.status != AnimationStatus.forward) { 
         _correctColorIsSet = true;
         _controller.forward();
         
@@ -79,10 +79,7 @@ void didUpdateWidget(covariant MatchedAnimation oldWidget) {
     }
       }
       super.didUpdateWidget(oldWidget);
-      // _correctColorIsSet = true;
-      // _controller.forward();
     }
-    // super.didUpdateWidget(oldWidget);
   }
 }
   @override

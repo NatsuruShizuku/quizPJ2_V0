@@ -47,8 +47,8 @@ class LearningModeScreen extends StatelessWidget {
                 );
               },
               child: Container(
-                height: height * 0.165, // ปรับความสูงสัมพันธ์กับหน้าจอ
-                width: width * 0.2, // ปรับความกว้างสัมพันธ์กับหน้าจอ
+                height: height * 0.165, 
+                width: width * 0.2, 
                 margin: const EdgeInsets.all(2.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -62,7 +62,7 @@ class LearningModeScreen extends StatelessWidget {
                       tag: topic.image,
                       child: Image.asset(
                         topic.image,
-                        height: height * 0.12, // ปรับขนาดของรูปภาพ
+                        height: height * 0.12, 
                         fit: BoxFit.cover,
                       ),
                     ),

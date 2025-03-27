@@ -4,11 +4,9 @@ import 'package:flutter_application_0/match_game/pages/game_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GameLevel extends StatelessWidget {
-  // final bool hasImage; // รับค่าจาก SelectGame
-  // const GameLevel({super.key, required this.hasImage});
+
   const GameLevel({super.key});
 
-  // ฟังก์ชันสำหรับดึงสถานะของด่านจาก SharedPreferences
   Future<bool> _getLevelCompletionStatus(int rows, int columns) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('level_${rows}x${columns}') ?? false;
@@ -24,7 +22,6 @@ class GameLevel extends StatelessWidget {
       {'rows': 4, 'columns': 4}, // 16 tiles
     ];
 
-    // กำหนดชุดสีให้แต่ละปุ่ม (ถ้ามีปุ่มมากกว่าจำนวนสี จะวนกลับ)
     final List<Color> buttonColors = [
       Colors.redAccent,
       Colors.pinkAccent,
@@ -50,26 +47,22 @@ class GameLevel extends StatelessWidget {
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // กำหนดให้ Grid แสดงผลเป็น 2 คอลัมน์
+
             const int crossAxisCount = 2;
             final int totalItems = levelSettings.length; // จำนวนรายการ
             final int rowCount = (totalItems / crossAxisCount).ceil(); // จำนวนแถว
 
-            // กำหนด spacing ระหว่างปุ่ม
             const double crossAxisSpacing = 10;
             const double mainAxisSpacing = 10;
 
-            // คำนวณความสูงที่มีอยู่จริงหลังจากหัก spacing และ padding แนวตั้ง
             double totalSpacingHeight = mainAxisSpacing * (rowCount - 1);
-            double availableHeight = constraints.maxHeight - totalSpacingHeight - 20; // หัก padding แนวตั้ง
+            double availableHeight = constraints.maxHeight - totalSpacingHeight - 20; 
             double itemHeight = availableHeight / rowCount;
 
-            // คำนวณความกว้างของแต่ละปุ่ม
             double totalCrossSpacing = crossAxisSpacing * (crossAxisCount - 1);
-            double availableWidth = constraints.maxWidth - 20 - totalCrossSpacing; // หัก padding แนวนอน
+            double availableWidth = constraints.maxWidth - 20 - totalCrossSpacing;
             double itemWidth = availableWidth / crossAxisCount;
 
-            // childAspectRatio สำหรับ GridView
             double ratio = itemWidth / itemHeight;
 
             return GridView.builder(
@@ -85,7 +78,6 @@ class GameLevel extends StatelessWidget {
               itemBuilder: (context, index) {
                 final level = levelSettings[index];
                 final label = '${level['rows']}x${level['columns']}';
-                // เลือกสีจาก buttonColors โดยวนกลับตาม index
                 final Color buttonColor = buttonColors[index % buttonColors.length];
                 return _buildLevelButton(
                   context,
@@ -158,7 +150,6 @@ Widget _buildLevelButton(
             bool isComplete = snapshot.data ?? false;
             return Stack(
               children: [
-                // ข้อความและดาว
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -193,7 +184,6 @@ Widget _buildLevelButton(
                     ],
                   ),
                 ),
-                // Overlay สี
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),

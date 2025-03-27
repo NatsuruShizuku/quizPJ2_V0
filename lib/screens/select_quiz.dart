@@ -13,10 +13,9 @@ class SelectQuiz extends StatefulWidget {
 }
 
 class _SelectQuizState extends State<SelectQuiz> {
-  // ฟังก์ชันสำหรับบันทึกโหมดที่ผู้ใช้เลือก
   Future<void> _saveSelectedMode(String mode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('lastMode', mode); // บันทึกโหมดลงใน SharedPreferences
+    await prefs.setString('lastMode', mode);
   }
 
   @override
@@ -53,7 +52,7 @@ class _SelectQuizState extends State<SelectQuiz> {
               children: [
                 InkWell(
                   onTap: () async {
-                    await _saveSelectedMode('Easy'); // บันทึกโหมด 'Easy'
+                    await _saveSelectedMode('Easy');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -104,7 +103,7 @@ class _SelectQuizState extends State<SelectQuiz> {
               children: [
                 InkWell(
                   onTap: () async {
-                    await _saveSelectedMode('Medium'); // บันทึกโหมด 'Medium'
+                    await _saveSelectedMode('Medium');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -162,7 +161,7 @@ class _SelectQuizState extends State<SelectQuiz> {
               children: [
                 InkWell(
                   onTap: () async {
-                    await _saveSelectedMode('Hard'); // บันทึกโหมด 'Hard'
+                    await _saveSelectedMode('Hard');
                     Navigator.push(
                       context,
                       MaterialPageRoute(

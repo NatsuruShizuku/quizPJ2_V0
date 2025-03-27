@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_0/main.dart';
 import 'package:flutter_application_0/match_game/pages/game_level.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,11 @@ void _navigateToPage(String buttonType) async {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const GameLevel()),
+      );
+      case 'ออก':
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage(title: '',)),
       );
       break;
   }
@@ -118,15 +124,21 @@ void _navigateToPage(String buttonType) async {
                         ],
                       ),
                     ),
-                    
-                    // Spacing
+
                     SizedBox(height: screenSize.height * 0.02),
                     
-                    // Buttons Section
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: ['เล่น']
+                            .map((text) => _buildButton(text, screenSize))
+                            .toList(),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: ['ออก']
                             .map((text) => _buildButton(text, screenSize))
                             .toList(),
                       ),

@@ -14,23 +14,13 @@ class _SpinAnimationState extends State<SpinAnimation>
   late AnimationController _controller;
 
   @override
-  // void initState() {
-  //   super.initState();
-  //   _controller = AnimationController(
-  //       duration: const Duration(milliseconds: 600), vsync: this);
 
-  //   Future.delayed(const Duration(milliseconds: 600), () {
-  //     if (mounted && !_controller.isAnimating) {
-  //       _controller.forward();
-  //     }
-  //   });
-  // }
   void initState() {
   super.initState();
   _controller = AnimationController(
     duration: const Duration(milliseconds: 600), 
     vsync: this,
-  )..forward(); // เล่นแอนิเมชันทันทีเมื่อ initState
+  )..forward(); 
 }
 
   @override

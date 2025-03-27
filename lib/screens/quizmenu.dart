@@ -32,7 +32,7 @@ void _navigateToPage(String buttonType) async {
       break;
     case 'คะแนนสูงสุด':
       final prefs = await SharedPreferences.getInstance();
-      String mode = prefs.getString('lastMode') ?? 'Medium'; // ดึงโหมดที่บันทึกไว้
+      String mode = prefs.getString('lastMode') ?? 'Medium';
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -139,10 +139,8 @@ void _navigateToPage(String buttonType) async {
                       ),
                     ),
                     
-                    // Spacing
                     SizedBox(height: screenSize.height * 0.02),
-                    
-                    // Buttons Section
+
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

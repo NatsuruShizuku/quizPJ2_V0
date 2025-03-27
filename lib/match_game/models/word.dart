@@ -5,14 +5,14 @@ class Word {
   final int id;
   final String descrip;
   final List<int> contents;
-  final int matraID;
+  final int fcID;
   bool displayText;
 
   Word({
     required this.id,
     required this.descrip,
     required this.contents,
-    required this.matraID,
+    required this.fcID,
     this.displayText = false,
   });
 
@@ -20,6 +20,6 @@ class Word {
     id: map[DatabaseHelper.columnId],
     descrip: map[DatabaseHelper.columnDescrip],
     contents: map[DatabaseHelper.columnContents],
-    matraID: map[DatabaseHelper.columnMatraID],
+    fcID: map[DatabaseHelper.columnFCID],
   );
 }

@@ -19,7 +19,6 @@ class DatabaseHelper {
 
     final db = await openDatabase(path);
 
-    // สร้างตาราง HighScores หากไม่มี
     await db.execute('''
       CREATE TABLE IF NOT EXISTS HighScores (
         mode TEXT NOT NULL,
@@ -52,8 +51,6 @@ class DatabaseHelper {
     return maps.map(HighScore.fromMap).toList();
   }
 
-  /// Copy the database from assets to the device
-
   static Future<void> copyDatabaseFromAssets(String destinationPath) async {
     try {
       ByteData data = await rootBundle.load('assets/$_dbName');
@@ -64,25 +61,24 @@ class DatabaseHelper {
     }
   }
 
-  /// Fetch all vocabularies with their corresponding matra text
   static Future<List<Vocabulary>> getVocabularies() async {
     final db = await _initDatabase();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT Vocabulary.*, Matra.matraTEXT 
+      SELECT Vocabulary.*, FinalConsonants.fcTEXT 
       FROM Vocabulary 
-      INNER JOIN Matra ON Vocabulary.matraID = Matra.matraID
+      INNER JOIN FinalConsonants ON Vocabulary.fcID = FinalConsonants.fcID
     ''');
 
     return maps.map((map) => Vocabulary(
       vocabID: map['vocabID'],
       syllable: map['syllable'],
       vocab: map['vocab'],
-      matraText: map['matraTEXT'],
-      matraID: map['matraID'],
+      fcText: map['fcTEXT'],
+      fcID: map['fcID'],
+      modeID: map['modeID'],
     )).toList();
   }
 
-  /// Fetch all questions from the QuestionM table
   static Future<List<QuestionM>> getQuestions() async {
     final db = await _initDatabase();
     final List<Map<String, dynamic>> maps = await db.query('QuestionM');
@@ -93,15 +89,15 @@ class DatabaseHelper {
     )).toList();
   }
 
-  /// Fetch all matras from the Matra table
-  static Future<List<Matra>> getMatras() async {
+  static Future<List<FinalConsonants>> getFinalConsonants() async {
     final db = await _initDatabase();
-    final List<Map<String, dynamic>> maps = await db.query('Matra');
+    final List<Map<String, dynamic>> maps = await db.query('FinalConsonants');
 
-    return maps.map((map) => Matra(
-      matraID: map['matraID'],
-      matraText: map['matraTEXT'],
+    return maps.map((map) => FinalConsonants(
+      fcID: map['fcID'],
+      fcText: map['fcTEXT'],
     )).toList();
   }
+
 
 }

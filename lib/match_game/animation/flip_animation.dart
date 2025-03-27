@@ -9,7 +9,7 @@ class FlipAnimation extends StatefulWidget {
     required this.animate,
     required this.reverse,
     required this.animationCompleted,
-    required this.onFlipStateChanged, // เพิ่ม callback
+    required this.onFlipStateChanged,
     this.delay = 0,
     Key? key,
   }) : super(key: key);
@@ -18,7 +18,7 @@ class FlipAnimation extends StatefulWidget {
   final bool animate;
   final bool reverse;
   final Function(bool) animationCompleted;
-  final ValueChanged<bool> onFlipStateChanged; // ส่งสถานะการหงาย
+  final ValueChanged<bool> onFlipStateChanged;
   final int delay;
 
   @override
@@ -42,7 +42,7 @@ class _FlipAnimationState extends State<FlipAnimation>
         final isFront = _controller.value >= 0.5;
         if (isFront != _isFront) {
           _isFront = isFront;
-          widget.onFlipStateChanged(_isFront); // ส่งสถานะการหงาย
+          widget.onFlipStateChanged(_isFront);
         }
       })
       ..addStatusListener((status) {
@@ -93,26 +93,7 @@ void didUpdateWidget(covariant FlipAnimation oldWidget) {
         transform: Matrix4.identity()
           ..rotateY(_animation.value * pi)
           ..setEntry(3, 2, 0.005),
-        // child: _controller.value >= 0.50
-        //     ? widget.word
-        //     : Container(
-        //       decoration: BoxDecoration(
-        //         color: Colors.deepPurple.withOpacity(0.8),
-        //         borderRadius: BorderRadius.circular(8),
-        //         boxShadow: [
-        //           BoxShadow(
-        //             color: Colors.black26,
-        //             blurRadius: 6,
-        //             offset: Offset(0, 3),
-        //           )
-        //         ],
-        //       ),
-        //       child: Icon(
-        //         Icons.help_outline,
-        //         size: 40,
-        //         color: Colors.white.withOpacity(0.8),
-        //       ),
-        //     ),
+
         child: _controller.value >= 0.50
     ? Transform(
         alignment: Alignment.center,
@@ -120,31 +101,12 @@ void didUpdateWidget(covariant FlipAnimation oldWidget) {
         child: widget.word,
       )
     : 
-    // Container(
-    //     decoration: BoxDecoration(
-    //       color: Colors.deepPurple.withOpacity(0.8),
-    //       borderRadius: BorderRadius.circular(8),
-    //       boxShadow: [
-    //         BoxShadow(
-    //           color: Colors.black26,
-    //           blurRadius: 6,
-    //           offset: Offset(0, 3),
-    //         )
-    //       ],
-    //     ),
-    //     child: Icon(
-    //       Icons.help_outline,
-    //       size: 40,
-    //       color: Colors.white.withOpacity(0.8),
-    //     ),
-    //   ),
+
     Container(
   decoration: BoxDecoration(
     image: DecorationImage(
       image: AssetImage("assets/images/starcard.png"),
       fit: BoxFit.cover,
-      // ถ้าต้องการปรับความโปร่งใสของภาพเพิ่มเติม สามารถใช้ colorFilter ได้
-      // colorFilter: ColorFilter.mode(Colors.deepPurple.withOpacity(0.8), BlendMode.dstATop),
     ),
     borderRadius: BorderRadius.circular(8),
     boxShadow: [

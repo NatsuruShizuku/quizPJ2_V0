@@ -1,10 +1,10 @@
 import 'package:flutter_application_0/screens/quiz_game.dart';
 
-class Matra {
-  final int matraID;
-  final String matraText;
+class FinalConsonants {
+  final int fcID;
+  final String fcText;
 
-  Matra({required this.matraID, required this.matraText});
+  FinalConsonants({required this.fcID, required this.fcText});
 }
 
 class QuestionM {
@@ -16,7 +16,7 @@ class QuestionM {
   AnswerType get answerType {
     switch (questionID) {
       case 1:
-        return AnswerType.matraText;
+        return AnswerType.fcText;
       default:
         return AnswerType.vocab;
     }
@@ -25,13 +25,13 @@ class QuestionM {
   String generateQuestionText(Vocabulary vocabulary, Vocabulary randomWord) {
     switch (questionID) {
       case 1:
-        return "${vocabulary.vocab} ''$questionText?''";
+        return "''${vocabulary.vocab}''  $questionText?";
       case 2:
-        return "$questionText ''${vocabulary.vocab}?''";
+        return "$questionText  ''${vocabulary.vocab}?''";
       case 3:
-        return "$questionText ''${vocabulary.matraText}?''";
+        return "$questionText  ''${vocabulary.fcText}?''";
       case 4:
-        return "$questionText ''${vocabulary.matraText}?''";
+        return "$questionText  ''${vocabulary.fcText}?''";
       case 5:
       case 6:
         return "$questionText?";
@@ -45,29 +45,29 @@ class Vocabulary {
   final int vocabID;
   final int syllable;
   final String vocab;
-  final String matraText;
-  final int matraID;
+  final String fcText;
+  final int fcID;
+  final int modeID;
 
   Vocabulary({
     required this.vocabID,
     required this.syllable,
     required this.vocab,
-    required this.matraText,
-    required this.matraID,
+    required this.fcText,
+    required this.fcID, 
+    required this.modeID,
   });
 
 }
 
 
 class HighScore {
-  // final int scoreID;
   final String mode;
   final String name;
   final int score;
   final DateTime timeStamp;
 
   HighScore({
-    // required this.scoreID,
     required this.mode,
     required this.name,
     required this.score,
@@ -76,7 +76,6 @@ class HighScore {
 
   Map<String, dynamic> toMap() {
     return {
-      // 'scoreID': scoreID,
       'mode': mode,
       'name': name,
       'score': score,
@@ -86,7 +85,6 @@ class HighScore {
 
   factory HighScore.fromMap(Map<String, dynamic> map) {
     return HighScore(
-      // scoreID: map['scoreID'] ?? 0,
       mode: map['mode'] ?? '',
       name: map['name'] ?? '',
       score: map['score'] ?? 0,

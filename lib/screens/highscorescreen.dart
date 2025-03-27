@@ -123,10 +123,15 @@ class _HighScoreTableScreenState extends State<HighScoreTableScreen> {
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                return SingleChildScrollView(
+                // scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.vertical,
                 child: DataTable(
-                  columnSpacing: 40,
+                  // columnSpacing: 40,
+                  // dataRowHeight: 60,
+                  columnSpacing: constraints.maxWidth/8 , // ปรับ columnSpacing ตามขนาดหน้าจอ
                   dataRowHeight: 60,
                   headingRowColor: MaterialStateColor.resolveWith(
                       (states) => Colors.deepPurple),
@@ -134,28 +139,28 @@ class _HighScoreTableScreenState extends State<HighScoreTableScreen> {
                     DataColumn(
                       label: Text('อันดับ',
                           style: GoogleFonts.chakraPetch(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ),
                     DataColumn(
-                      label: Text('ชื่อผู้เล่น',
+                      label: Text('ชื่อ',
                           style: GoogleFonts.chakraPetch(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ),
                     DataColumn(
                       label: Text('คะแนน',
                           style: GoogleFonts.chakraPetch(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ),
                     DataColumn(
-                      label: Text('วันที่ทำได้',
+                      label: Text('วันที่',
                           style: GoogleFonts.chakraPetch(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ),
@@ -172,26 +177,28 @@ class _HighScoreTableScreenState extends State<HighScoreTableScreen> {
                       cells: [
                         DataCell(Center(
                           child: Text('${index + 1}',
-                              style: GoogleFonts.chakraPetch(fontSize: 16)),
+                              style: GoogleFonts.chakraPetch(fontSize: 14)),
                         )),
                         DataCell(Center(
                           child: Text(score.name,
-                              style: GoogleFonts.chakraPetch(fontSize: 16)),
+                              style: GoogleFonts.chakraPetch(fontSize: 14)),
                         )),
                         DataCell(Center(
                           child: Text(score.score.toString(),
-                              style: GoogleFonts.chakraPetch(fontSize: 16)),
+                              style: GoogleFonts.chakraPetch(fontSize: 14)),
                         )),
                         DataCell(Center(
                           child: Text(
                             DateFormat('dd/MM/yyyy HH:mm').format(score.timeStamp),
-                            style: GoogleFonts.chakraPetch(fontSize: 16),
+                            style: GoogleFonts.chakraPetch(fontSize: 14),
                           ),
                         )),
                       ],
                     );
                   }).toList(),
                 ),
+              );
+              },
               ),
             );
           },

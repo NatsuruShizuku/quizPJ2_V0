@@ -28,7 +28,6 @@ class _HowToPlayState extends State<HowToPlay> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Main Content
               Column(
                 children: [
                   SizedBox(
@@ -64,9 +63,6 @@ class _HowToPlayState extends State<HowToPlay> {
                     Text("จะทำการแสดงข้อมูลที่ทำได้ในรอบนั้นๆ", style: GoogleFonts.chakraPetch(fontSize: 22,color: Colors.black87,fontWeight: FontWeight.bold),),
                     Text("และสามารถบันทึกคะแนนที่ทำได้", style: GoogleFonts.chakraPetch(fontSize: 22,color: Colors.black87,fontWeight: FontWeight.bold),),
                     Text("โดยการกรอกชื่อและกดบันทึกคะแนน", style: GoogleFonts.chakraPetch(fontSize: 22,color: Colors.black87,fontWeight: FontWeight.bold),),
-                    // Text("เมื่อเลือกคำตอบถูกต้องจะได้คะแนนเพิ่ม   10คะแนน  หากเลือกผิดจะไม่ได้คะแนน        โดยคำถามจะมีทั้งหมด 10ข้อ 4ตัวเลือก" , style: GoogleFonts.chakraPetch(fontSize: 20,color: Colors.black87),),
-
-                    // Text("ในโหมดง่าย เมื่อเล่นจบจะทำการบันทึกคะแนนที่ทำได้ สามารถดูคะแนนได้ที่ปุ่มคะแนนสูงสุด แต่ถ้าตอบไม่ทันเวลาจะถือว่าแพ้และแสดงคะแนนที่ทำได้" , style: GoogleFonts.chakraPetch(fontSize: 20,color: Colors.black87),),
 
                   ],
                 ),

@@ -12,14 +12,12 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false, // ซ่อน debug banner
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(backgroundColor: Colors.lightBlueAccent),
@@ -38,7 +36,6 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      // ignore: sized_box_for_whitespace
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -182,8 +179,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   child:
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9C4),
       body: Container(
@@ -206,7 +201,6 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 InkWell(
                   onTap: () {
-                    // นำไปยังหน้าถัดไป
                     Navigator.push(
                       context,
                       MaterialPageRoute(

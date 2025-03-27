@@ -42,7 +42,6 @@ class _SettingMenuQState extends State<SettingMenuQ> {
                 ),
               ),
               const Spacer(),
-              // First Button - Toggle Audio
               Column(
                 children: [
                   InkWell(
@@ -67,15 +66,6 @@ class _SettingMenuQState extends State<SettingMenuQ> {
                             size: 40,
                             color: Colors.white,
                           ),
-                          // if (isMuted)
-                          //   Transform.rotate(
-                          //     angle: -0.785398, // 45 degrees in radians
-                          //     child: Container(
-                          //       width: 80,
-                          //       height: 4,
-                          //       color: Colors.red,
-                          //     ),
-                          //   ),
                         ],
                       ),
                     ),
@@ -91,7 +81,6 @@ class _SettingMenuQState extends State<SettingMenuQ> {
                 ],
               ),
               const Spacer(),
-              // Second Button - System Admin
               Column(
                 children: [
                   Container(
@@ -125,7 +114,6 @@ class _SettingMenuQState extends State<SettingMenuQ> {
                 ],
               ),
               const Spacer(),
-              // Third Button - Exit
               Column(
                 children: [
                   Container(

@@ -7,11 +7,11 @@ import 'package:flutter_application_0/database/database_helper.dart';
 import 'package:flutter_application_0/models/dataModel.dart';
 import 'package:flutter_application_0/screens/gamesummary.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // import GameSummaryScreen
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizGame extends StatefulWidget {
   final String mode;
-  final int initialTime;      // เวลาเริ่มต้น
+  final int initialTime;     
   final int scorePerCorrect;
   final String modeText;
   final int timeperminite;
@@ -24,22 +24,35 @@ class QuizGame extends StatefulWidget {
     required this.timeperminite,
   });
 
+  int get modeID {
+    switch (mode) {
+      case 'Easy':
+        return 1;
+      case 'Medium':
+        return 2;
+      case 'Hard':
+        return 3;
+      default:
+        return 1;
+    }
+  }
+
   @override
   _QuizGameState createState() => _QuizGameState();
 }
 
-enum AnswerType { matraText, vocab }
+enum AnswerType { fcText, vocab }
 
 class _QuizGameState extends State<QuizGame> {
   List<QuestionM> questions = [];
   List<Vocabulary> vocabularies = [];
-  List<Matra> matras = [];
+  List<FinalConsonants> fc = [];
   int score = 0;
   int consecutiveWrong = 0;
-  int totalQuestions = 0; // นับจำนวนคำถามที่ตอบไปแล้ว
+  int totalQuestions = 0;
   Timer? timer;
   QuizQuestion? currentQuestion;
-  QuestionM? currentQuestionM; // เก็บข้อมูล QuestionM ของคำถามปัจจุบัน
+  QuestionM? currentQuestionM;
   bool showFeedback = false;
   String? selectedAnswer;
   bool isCorrect = false;
@@ -50,12 +63,12 @@ class _QuizGameState extends State<QuizGame> {
   late Vocabulary vocabulary;
   late Vocabulary partner;
   int totalTime = 180;
-  bool showPopup = true; // ค่าตั้งต้นให้แสดง Popup
+  bool showPopup = true;
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool isPaused = false;
-  int timeLeft = 60; // เวลาที่เหลือในวินาที
-  bool isMusicOn = true; // ควบคุมสถานะเพลงประกอบ
-  late int remainingTime; // จะถูกกำหนดค่าตอน initState จาก widget.initialTime
+  int timeLeft = 60; 
+  bool isMusicOn = true; 
+  late int remainingTime;
 
   @override
   void initState() {
@@ -71,7 +84,6 @@ class _QuizGameState extends State<QuizGame> {
       isPaused = true;
     });
 
-    // แสดง Popup
     showPauseDialog();
   }
 
@@ -81,24 +93,10 @@ class _QuizGameState extends State<QuizGame> {
     });
   }
 
-  // void _restartGame() {
-  //   setState(() {
-  //     timeLeft = 60;
-  //     isPaused = false;
-  //   });
-  //   Navigator.pop(context);
-  // }
-
-  // void _toggleMusic() {
-  //   setState(() {
-  //     isMusicOn = !isMusicOn;
-  //   });
-  // }
-
   void showPauseDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false, // ป้องกันการปิดโดยกดด้านนอก
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Center(
           child: Text("เกมหยุดชั่วคราว"),
@@ -114,7 +112,7 @@ class _QuizGameState extends State<QuizGame> {
                   "หน้าหลัก",
                   () {
                     Navigator.pop(context);
-                    Navigator.pop(context); // กลับไปหน้าหลัก
+                    Navigator.pop(context);
                   },
                   Colors.redAccent,
                 ),
@@ -123,7 +121,7 @@ class _QuizGameState extends State<QuizGame> {
                   "เล่นใหม่",
                   () {
                     initializeGame();
-                    Navigator.pop(context); // กลับไปหน้าหลัก
+                    Navigator.pop(context);
                   },
                   Colors.blueAccent,
                 ),
@@ -132,7 +130,7 @@ class _QuizGameState extends State<QuizGame> {
                   "เล่นต่อ",
                   () {
                     _resumeGame();
-                    Navigator.pop(context); // กลับไปหน้าหลัก
+                    Navigator.pop(context);
                   },
                   Colors.yellow.shade700,
                 ),
@@ -141,7 +139,6 @@ class _QuizGameState extends State<QuizGame> {
                   "ดูข้อมูล",
                   () {
                     showGameSettingsPopup(context);
-                    // Navigator.pop(context); // กลับไปหน้าหลัก
                   },
                   Colors.black45,
                 ),
@@ -169,12 +166,16 @@ class _QuizGameState extends State<QuizGame> {
   Future<void> initializeGame() async {
     final questions = await DatabaseHelper.getQuestions();
     final vocabularies = await DatabaseHelper.getVocabularies();
-    final matras = await DatabaseHelper.getMatras();
+    final fc = await DatabaseHelper.getFinalConsonants();
+
+final filteredVocabularies = vocabularies
+      .where((v) => v.syllable == widget.modeID)
+      .toList();
 
     setState(() {
       this.questions = questions;
-      this.vocabularies = vocabularies;
-      this.matras = matras;
+      this.vocabularies = filteredVocabularies;
+      this.fc = fc;
     });
 
     startGame();
@@ -184,7 +185,6 @@ class _QuizGameState extends State<QuizGame> {
     await _audioPlayer.play(AssetSource("sounds/$fileName"));
   }
 
-  // ตรวจสอบว่าผู้ใช้ต้องการให้แสดง Popup หรือไม่
   Future<void> _checkPopupPreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool shouldShowPopup = prefs.getBool('show_popup') ?? true;
@@ -196,17 +196,15 @@ class _QuizGameState extends State<QuizGame> {
     }
   }
 
-  //new code
-  String getMatraTextFromID(int matraID) {
-    return matras
+  String getFinalConsonantTextFromID(int fcID) {
+    return fc
         .firstWhere(
-          (m) => m.matraID == matraID,
-          orElse: () => Matra(matraID: matraID, matraText: ''),
+          (m) => m.fcID == fcID,
+          orElse: () => FinalConsonants(fcID: fcID, fcText: ''),
         )
-        .matraText;
+        .fcText;
   }
 
-  // เริ่มเกมใหม่
   void startGame() {
     timer?.cancel();
     feedbackTimer?.cancel();
@@ -245,6 +243,7 @@ class _QuizGameState extends State<QuizGame> {
   void generateNewQuestion() {
     final random = Random();
     final question = questions[random.nextInt(questions.length)];
+    
     final vocabulary = vocabularies[random.nextInt(vocabularies.length)];
     Vocabulary randomWord = _getRandomWord(vocabulary.vocabID);
     final questionText = question.generateQuestionText(vocabulary, randomWord);
@@ -257,7 +256,7 @@ class _QuizGameState extends State<QuizGame> {
         correctAnswer: correctAnswer,
         options: options,
       );
-      currentQuestionM = question; // เก็บข้อมูลคำถามจริงไว้ที่นี่
+      currentQuestionM = question;
     });
   }
 
@@ -265,28 +264,28 @@ class _QuizGameState extends State<QuizGame> {
     final random = Random();
     if (question.questionID == 2) {
 
-      List<Vocabulary> sameMatraWords = vocabularies
+      List<Vocabulary> sameFCWords = vocabularies
           .where((v) =>
-              v.matraText == vocabulary.matraText &&
+              v.fcText == vocabulary.fcText &&
               v.vocabID != vocabulary.vocabID)
           .toList();
-      return sameMatraWords.isNotEmpty
-          ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab
+      return sameFCWords.isNotEmpty
+          ? sameFCWords[random.nextInt(sameFCWords.length)].vocab
           : vocabulary.vocab;
     } else if (question.questionID == 4) {
 
-      List<Vocabulary> differentMatraWords = vocabularies
-          .where((v) => v.matraText != vocabulary.matraText)
+      List<Vocabulary> differentFCWords = vocabularies
+          .where((v) => v.fcText != vocabulary.fcText)
           .toList();
-      return differentMatraWords.isNotEmpty
-          ? differentMatraWords[random.nextInt(differentMatraWords.length)]
+      return differentFCWords.isNotEmpty
+          ? differentFCWords[random.nextInt(differentFCWords.length)]
               .vocab
           : vocabulary.vocab;
     } else if (question.questionID == 5) {
       Vocabulary? partner;
       for (var word in vocabularies) {
         if (word.vocabID != vocabulary.vocabID &&
-            word.matraText == vocabulary.matraText) {
+            word.fcText == vocabulary.fcText) {
           partner = word;
           break;
         }
@@ -294,8 +293,8 @@ class _QuizGameState extends State<QuizGame> {
       partner ??= vocabulary;
       return "${vocabulary.vocab} ${partner.vocab}";
     }
-    return question.answerType == AnswerType.matraText
-        ? vocabulary.matraText
+    return question.answerType == AnswerType.fcText
+        ? vocabulary.fcText
         : vocabulary.vocab;
   }
 
@@ -306,18 +305,16 @@ class _QuizGameState extends State<QuizGame> {
 
     if (question.questionID == 2) {
 
-      List<Vocabulary> sameMatraWords = vocabularies
+      List<Vocabulary> sameFCWords = vocabularies
           .where((v) =>
-              v.matraText == vocabulary.matraText &&
+              v.fcText == vocabulary.fcText &&
               v.vocabID != vocabulary.vocabID)
           .toList();
-
-      //     ? sameMatraWords[random.nextInt(sameMatraWords.length)].vocab
 
       String correct = correctAnswer;
 
       List<String> wrongOptions = vocabularies
-          .where((v) => v.matraText != vocabulary.matraText)
+          .where((v) => v.fcText != vocabulary.fcText)
           .map((v) => v.vocab)
           .toSet()
           .toList();
@@ -336,7 +333,7 @@ class _QuizGameState extends State<QuizGame> {
 
       List<String> wrongOptions = vocabularies
           .where((w) =>
-              w.matraText == vocabulary.matraText &&
+              w.fcText == vocabulary.fcText &&
               w.vocabID != vocabulary.vocabID)
           .map((w) => w.vocab)
           .toSet()
@@ -355,8 +352,8 @@ class _QuizGameState extends State<QuizGame> {
       while (options.length < 4) {
         Vocabulary word1 = vocabularies[random.nextInt(vocabularies.length)];
         Vocabulary word2 = vocabularies[random.nextInt(vocabularies.length)];
-        if (word1.matraText == word2.matraText &&
-            word1.matraID == word2.matraID) continue;
+        if (word1.fcText == word2.fcText &&
+            word1.fcID == word2.fcID) continue;
         String option = "${word1.vocab} ${word2.vocab}";
         if (!usedOptions.contains(option)) {
           options.add(option);
@@ -368,32 +365,32 @@ class _QuizGameState extends State<QuizGame> {
     } else if (question.questionID == 6) {
 
       final answerType = question.answerType;
-      String currentCorrect = (answerType == AnswerType.matraText)
-          ? vocabulary.matraText
+      String currentCorrect = (answerType == AnswerType.fcText)
+          ? vocabulary.fcText
           : vocabulary.vocab;
-      List<String> candidateMatraTexts = vocabularies
-          .map((w) => w.matraText)
-          .where((mt) => mt != vocabulary.matraText)
+      List<String> candidateFCTexts = vocabularies
+          .map((w) => w.fcText)
+          .where((mt) => mt != vocabulary.fcText)
           .toSet()
           .toList();
-      if (candidateMatraTexts.isEmpty) {
-        candidateMatraTexts = ['default'];
+      if (candidateFCTexts.isEmpty) {
+        candidateFCTexts = ['default'];
       }
-      String wrongMatra =
-          candidateMatraTexts[random.nextInt(candidateMatraTexts.length)];
+      String wrongFC =
+          candidateFCTexts[random.nextInt(candidateFCTexts.length)];
       List<String> wrongOptions = vocabularies
-          .where((w) => w.matraText == wrongMatra)
+          .where((w) => w.fcText == wrongFC)
           .map((w) =>
-              (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+              (answerType == AnswerType.fcText) ? w.fcText : w.vocab)
           .toSet()
           .toList();
       if (wrongOptions.length < 3) {
-        for (String candidate in candidateMatraTexts) {
-          wrongMatra = candidate;
+        for (String candidate in candidateFCTexts) {
+          wrongFC = candidate;
           wrongOptions = vocabularies
-              .where((w) => w.matraText == candidate)
+              .where((w) => w.fcText == candidate)
               .map((w) =>
-                  (answerType == AnswerType.matraText) ? w.matraText : w.vocab)
+                  (answerType == AnswerType.fcText) ? w.fcText : w.vocab)
               .toSet()
               .toList();
           if (wrongOptions.length >= 3) break;
@@ -408,17 +405,17 @@ class _QuizGameState extends State<QuizGame> {
       return options;
     } else {
 
-      String correctMatra = (question.answerType == AnswerType.matraText)
+      String correctFC = (question.answerType == AnswerType.fcText)
           ? correctAnswer
-          : vocabulary.matraText;
+          : vocabulary.fcText;
       Set<int> usedVocabIds = {vocabulary.vocabID};
       List<String> options = [correctAnswer];
       while (options.length < 4) {
         Vocabulary word = vocabularies[random.nextInt(vocabularies.length)];
         if (usedVocabIds.contains(word.vocabID)) continue;
-        if (word.matraText == correctMatra) continue;
-        String value = (question.answerType == AnswerType.matraText)
-            ? word.matraText
+        if (word.fcText == correctFC) continue;
+        String value = (question.answerType == AnswerType.fcText)
+            ? word.fcText
             : word.vocab;
         if (!options.contains(value)) {
           options.add(value);
@@ -445,7 +442,7 @@ class _QuizGameState extends State<QuizGame> {
       case 3:
       case 4:
       case 6:
-        return AnswerType.matraText;
+        return AnswerType.fcText;
       case 5:
         return AnswerType.vocab;
       default:
@@ -582,7 +579,6 @@ class _QuizGameState extends State<QuizGame> {
     );
   }
 
-// Card ปกติ
   Widget _buildInfoCard(
       IconData icon, String title, String value, Color color) {
     return Container(
@@ -606,7 +602,6 @@ class _QuizGameState extends State<QuizGame> {
     );
   }
 
-// Card ที่มี CircularProgressIndicator สำหรับเวลา
   Widget _buildInfoCardWithProgress(
       IconData icon, String title, String value, Color color, double progress) {
     return Container(
@@ -700,7 +695,6 @@ class _QuizGameState extends State<QuizGame> {
     final bool isSelected = selectedAnswer == option;
     final bool isCorrectAnswer = option == currentQuestion?.correctAnswer;
 
-    // กำหนดสีพื้นหลังสำหรับสถานะต่าง ๆ
     Color buttonColor = Colors.white;
     if (showFeedback) {
       if (isCorrectAnswer) {
@@ -714,7 +708,6 @@ class _QuizGameState extends State<QuizGame> {
       duration: Duration(milliseconds: 250),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        // เมื่อมีการเลือกให้เปลี่ยนเป็น gradient เล็กน้อย
         gradient: isSelected
             ? LinearGradient(
                 colors: [Colors.blue.shade50, Colors.blue.shade100],
@@ -829,21 +822,16 @@ class _QuizGameState extends State<QuizGame> {
   }
 
   void checkAnswer(String selectedAnswer) {
-    // คำตอบที่ถูกต้อง
     String correctAnswer = "${vocabulary.vocab} ${partner.vocab}";
 
-    // ตรวจสอบคำตอบ
     if (validateAnswer(selectedAnswer, correctAnswer)) {
-      // ตอบถูก
       setState(() {
         score += widget.scorePerCorrect;
       });
     } else {
-      // ตอบผิด
       setState(() {
         lives -= 1;
         if (lives == 0) {
-          // แสดงหน้าสรุปคะแนน
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -985,14 +973,11 @@ bool validateAnswer(String selectedAnswer, String correctAnswer) {
 }
 
 
-
-// ฟังก์ชันบันทึกค่าความต้องการของผู้ใช้
 Future<void> _savePopupPreference(bool value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setBool('show_popup', value);
 }
 
-// ฟังก์ชันสร้างกล่องแสดงข้อมูล
 Widget _buildSettingItem(String title,String scoreText ,String value) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 8),
@@ -1000,7 +985,6 @@ Widget _buildSettingItem(String title,String scoreText ,String value) {
     constraints: BoxConstraints(
       minHeight: 60,
       maxHeight: 100,
-      // minWidth: double.infinity,
       minWidth: 300,
     ),
     decoration: BoxDecoration(
@@ -1025,7 +1009,6 @@ Widget _buildSettingItem(String title,String scoreText ,String value) {
   );
 }
 
-// ฟังก์ชันสร้างวงกลมสีด้านบน
 Widget _buildCircle(Color color) {
   return Container(
     width: 40,

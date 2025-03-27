@@ -37,7 +37,7 @@ class _GamePageState extends State<GamePage> {
   late final DatabaseHelper _dbHelper;
   List<Word> sourceWords = [];
   late final GameManager _gameManager;
-  bool _startPopupShown = false; // flag สำหรับตรวจสอบการแสดง popup เริ่มเกม
+  bool _startPopupShown = false;
 
   @override
   void initState() {
@@ -80,10 +80,10 @@ class _GamePageState extends State<GamePage> {
     final totalPairs = (widget.rows * widget.columns) ~/ 2;
     Map<int, List<Word>> groups = {};
     for (Word word in sourceWords) {
-      groups.putIfAbsent(word.matraID, () => []).add(word);
+      groups.putIfAbsent(word.fcID, () => []).add(word);
     }
     List<List<Word>> validPairs = [];
-    groups.forEach((matraID, wordsList) {
+    groups.forEach((fcID, wordsList) {
       if (wordsList.length >= 2) {
         wordsList.shuffle();
         int numPairs = wordsList.length ~/ 2;
@@ -94,7 +94,7 @@ class _GamePageState extends State<GamePage> {
     });
     if (validPairs.length < totalPairs) {
       throw Exception(
-          'ไม่พบคำศัพท์เพียงพอในฐานข้อมูลที่มี matraID เดียวกันสำหรับจับคู่');
+          'ไม่พบคำศัพท์เพียงพอในฐานข้อมูลที่มี fcID เดียวกันสำหรับจับคู่');
     }
     validPairs.shuffle();
     List<List<Word>> selectedPairs = validPairs.take(totalPairs).toList();
@@ -127,11 +127,9 @@ class _GamePageState extends State<GamePage> {
           if (snapshot.hasError) return const ErrorPage();
           final isDataReady = snapshot.connectionState == ConnectionState.done;
           if (isDataReady) {
-            // แสดง Popup เริ่มเกม ครั้งเดียวเมื่อข้อมูลพร้อม
             if (!_startPopupShown && _gridWords.isNotEmpty) {
               _startPopupShown = true;
               WidgetsBinding.instance.addPostFrameCallback((_) async {
-                // โหลด asset image เป็น ByteData แล้วแปลงเป็น Uint8List
                 final byteData =
                     await rootBundle.load("assets/images/Tips.png");
                 final assetBytes = byteData.buffer.asUint8List();
@@ -141,7 +139,7 @@ class _GamePageState extends State<GamePage> {
                   context: context,
                   builder: (context) => StartGamePopup(
                     imageBytes:
-                        assetBytes, // ส่ง assetBytes แทนข้อมูลจากฐานข้อมูล
+                        assetBytes,
                   ),
                 );
               });
@@ -161,7 +159,6 @@ class _GamePageState extends State<GamePage> {
     return Selector<GameManager, bool>(
       selector: (_, gameManager) => gameManager.roundCompleted,
       builder: (_, roundCompleted, __) {
-        // เมื่อจบรอบเกมให้บันทึกสถานะด่านและแสดง ReplayPopUp พร้อมกับ Confetti Animation
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           if (roundCompleted) {
             await _saveLevelCompletionStatus();
@@ -186,11 +183,7 @@ class _GamePageState extends State<GamePage> {
                 ),
               ),
             ),
-            // Positioned(
-            //   top: 40,
-            //   right: 20,
-            //   child: _buildPauseButton(),
-            // ),
+
             Column(
               children: [
                 _buildStatsHeader(context),
@@ -265,11 +258,9 @@ class _GamePageState extends State<GamePage> {
     context: context,
     barrierDismissible: false,
     builder: (context) => Dialog(
-      // ใช้ shape เพื่อกำหนดขอบโค้งมน
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      // ใช้ child เพื่อใส่ Widget หลัก
       child: Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -293,7 +284,6 @@ class _GamePageState extends State<GamePage> {
                   child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
             Text(
               'เกมหยุดชั่วคราว',
               style: GoogleFonts.chakraPetch(
@@ -311,7 +301,6 @@ class _GamePageState extends State<GamePage> {
             ),
             SizedBox(height: 20),
 
-            // Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -419,10 +408,8 @@ class _GamePageState extends State<GamePage> {
 
   Widget _buildStatsHeader(BuildContext context) {
     return Container(
-      // เปลี่ยน padding เพื่อให้มีพื้นที่มากขึ้น
       padding: const EdgeInsets.only(top: 24, bottom: 16, left: 16, right: 16),
       decoration: BoxDecoration(
-        // ใช้ gradient ที่มีโทนสีสดใสออกแนว Mobile Game
         gradient: const LinearGradient(
           colors: [
             Color.fromARGB(255, 56, 159, 243), // ม่วง
@@ -446,7 +433,6 @@ class _GamePageState extends State<GamePage> {
       ),
       child: Column(
         children: [
-          // แถวแรก: แสดงหัวใจ, เหรียญ หรืออื่น ๆ (ตามสไตล์เกม)
           Selector<GameManager, ({int moves, int successfulMatches})>(
             selector: (_, gm) =>
                 (moves: gm.moves, successfulMatches: gm.successfulMatches),
@@ -506,7 +492,6 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-// ดึงค่าคู่ที่จับสำเร็จสะสมจาก SharedPreferences
   Future<int> _getPersistentMatches() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('persistentMatchedPairs') ?? 0;
@@ -522,7 +507,6 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-// สร้างการ์ดแสดงสถิติ
   Widget _buildStatCard(String title, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
@@ -573,7 +557,6 @@ class _GamePageState extends State<GamePage> {
   }
 }
 
-// Widget สำหรับ Popup เริ่มเกม
 class StartGamePopup extends StatelessWidget {
   final Uint8List imageBytes;
 
@@ -603,10 +586,7 @@ class StartGamePopup extends StatelessWidget {
           Positioned(
             top: 0,
             right: 0,
-            // child: IconButton(
-            //   icon: const Icon(Icons.close, color: Colors.black,size: 35,),
-            //   onPressed: () => Navigator.of(context).pop(),
-            // ),
+
             child: Container(
       decoration: BoxDecoration(
         color: Colors.redAccent.withOpacity(0.9),

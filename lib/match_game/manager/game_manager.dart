@@ -12,17 +12,13 @@ class GameManager extends ChangeNotifier {
       ignoreTaps = false,
       roundCompleted = false;
   List<int> answeredWords = [];
-  // bool hasImage;
   final int totalTiles;
   int moves = 0;
   
-  // ตัวแปรนับจำนวนคู่ที่จับได้ในรอบเกมปัจจุบัน
   int successfulMatches = 0;
 
-  // GameManager({required this.hasImage, required this.totalTiles});
     GameManager({required this.totalTiles});
 
-  // เมื่อมีการแตะที่ tile ให้เพิ่ม moves และเก็บข้อมูล tile ที่ถูกแตะ
   tileTapped({required int index, required Word word}) {
     moves++;
     ignoreTaps = true;
@@ -43,8 +39,8 @@ class GameManager extends ChangeNotifier {
   onAnimationCompleted({required bool isForward}) async {
     if (tappedWords.length == 2) {
       if (isForward) {
-        bool isMatch = tappedWords.entries.elementAt(0).value.matraID ==
-            tappedWords.entries.elementAt(1).value.matraID;
+        bool isMatch = tappedWords.entries.elementAt(0).value.fcID ==
+            tappedWords.entries.elementAt(1).value.fcID;
 
         if (isMatch) {
           answeredWords.addAll(tappedWords.keys);
@@ -76,7 +72,6 @@ class GameManager extends ChangeNotifier {
     notifyListeners();
   }
   
-  // เมธอดสำหรับรีเซ็ตสถานะของเกมใหม่ (จะรีเซ็ต moves, successfulMatches และข้อมูลอื่นๆ)
   void resetGame() {
     moves = 0;
     tappedWords.clear();
@@ -90,7 +85,6 @@ class GameManager extends ChangeNotifier {
     notifyListeners();
   }
   
-  // อัปเดตจำนวนคู่ที่จับได้แบบถาวรใน SharedPreferences
   Future<void> _updatePersistentMatchedPairs(int delta) async {
     final prefs = await SharedPreferences.getInstance();
     int currentTotal = prefs.getInt('persistentMatchedPairs') ?? 0;
