@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter_application_0/models/dataModel.dart';
 
 class DatabaseHelper {
-  static const String _dbName = 'new_word4.db';
+  static const String _dbName = 'new_word8.db';
 
 
    static Future<Database> _initDatabase() async {

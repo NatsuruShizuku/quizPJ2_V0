@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_0/learningscreen/learning_screen.dart';
-import 'package:flutter_application_0/match_game/pages/match_menu.dart';
+import 'package:flutter_application_0/match_game/match_menu.dart';
 import 'package:flutter_application_0/screens/quizmenu.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
